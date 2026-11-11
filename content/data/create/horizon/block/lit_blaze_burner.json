@@ -1,0 +1,48 @@
+{
+  "template": "minecraft:glass",
+  "shapes": {
+    "default": [
+      [
+        0.0625,
+        0,
+        0.0625,
+        0.9375,
+        0.875,
+        0.9375
+      ]
+    ]
+  },
+  "collision_shapes": {
+    "default": [
+      [
+        0,
+        0,
+        0,
+        1,
+        0.25,
+        1
+      ]
+    ]
+  },
+  "item": false,
+  "properties": {
+    "hardness": 3,
+    "explosion_resistance": 6,
+    "requires_tool": true,
+    "map_color": 22,
+    "sounds": "minecraft:gold_block",
+    "render_shape": "MODEL"
+  },
+  "state_properties": {
+    "flame_type": {
+      "type": "enum",
+      "values": [
+        "regular",
+        "soul"
+      ]
+    }
+  },
+  "default_state": {
+    "flame_type": "regular"
+  }
+}

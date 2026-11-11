@@ -1,0 +1,61 @@
+name: Rust core
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Rust
+        run: rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
+      - name: Format
+        run: cargo +1.99.1 fmt --all -- --check
+      - name: Source installation contracts
+        run: python3 tools/check_distribution.py
+      - name: Test
+        run: cargo +1.99.1 test --locked --workspace
+      - name: Clippy
+        run: cargo +1.99.1 clippy --locked --workspace --all-targets -- -D warnings
+      - uses: actions/checkout@v4
+        with:
+          repository: Creators-of-Create/Create
+          ref: ac0c444d9828da3453ae8cc65338e8de063286fb
+          path: reference-create
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - name: Original Java behavior oracles
+        env:
+          CREATE_SOURCE: ${{ github.workspace }}/reference-create
+        run: |
+          mkdir -p .tools/rust
+          ln -s "$(dirname "$(rustup which --toolchain 1.99.1 cargo)")" .tools/rust/bin
+          python3 tools/oracle.py
+          python3 tools/placement_oracle.py
+          python3 tools/rotation_oracle.py
+          python3 tools/processing_oracle.py
+          python3 tools/visual_oracle.py
+          python3 tools/milling_oracle.py
+          python3 tools/fan_oracle.py
+          python3 tools/drilling_oracle.py
+          python3 tools/basin_recipe_filter_oracle.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: java-parity-results
+          path: |
+            .local/network-oracle/result.json
+            .local/placement-oracle/result.json
+            .local/rotation-oracle/result.json
+            .local/processing-oracle/result.json
+            .local/visual-oracle/result.json
+            .local/milling-oracle/result.json
+            .local/fan-oracle/result.json
+            .local/drilling-oracle/result.json
+            .local/basin-recipe-filter-*/result.json

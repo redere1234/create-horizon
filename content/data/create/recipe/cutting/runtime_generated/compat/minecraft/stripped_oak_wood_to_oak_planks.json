@@ -1,0 +1,13 @@
+{
+  "type": "create:cutting",
+  "ingredients": [
+    "minecraft:stripped_oak_wood"
+  ],
+  "processing_time": 50,
+  "results": [
+    {
+      "id": "minecraft:oak_planks",
+      "count": 6
+    }
+  ]
+}

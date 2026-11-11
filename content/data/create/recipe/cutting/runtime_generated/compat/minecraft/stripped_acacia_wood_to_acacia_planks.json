@@ -1,0 +1,13 @@
+{
+  "type": "create:cutting",
+  "ingredients": [
+    "minecraft:stripped_acacia_wood"
+  ],
+  "processing_time": 50,
+  "results": [
+    {
+      "id": "minecraft:acacia_planks",
+      "count": 6
+    }
+  ]
+}

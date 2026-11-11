@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "create:block/fallback/chassis_secondary",
+    "west": "create:block/fallback/chassis_secondary",
+    "east": "create:block/fallback/chassis_secondary",
+    "down": "create:block/fallback/chassis_end",
+    "up": "create:block/fallback/chassis_end",
+    "north": "create:block/fallback/chassis_secondary",
+    "south": "create:block/fallback/chassis_secondary"
+  }
+}

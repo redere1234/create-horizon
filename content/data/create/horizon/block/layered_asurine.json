@@ -1,0 +1,11 @@
+{
+  "template": "minecraft:quartz_pillar",
+  "item": true,
+  "properties": {
+    "hardness": 1.25,
+    "explosion_resistance": 6.0,
+    "requires_tool": true,
+    "map_color": 25,
+    "sounds": "minecraft:deepslate"
+  }
+}

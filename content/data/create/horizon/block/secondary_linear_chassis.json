@@ -1,0 +1,31 @@
+{
+  "template": "minecraft:oak_planks",
+  "item": true,
+  "properties": {
+    "hardness": 2,
+    "explosion_resistance": 3,
+    "requires_tool": false,
+    "sounds": "minecraft:oak_planks"
+  },
+  "state_properties": {
+    "axis": {
+      "type": "enum",
+      "values": [
+        "x",
+        "y",
+        "z"
+      ]
+    },
+    "sticky_top": {
+      "type": "boolean"
+    },
+    "sticky_bottom": {
+      "type": "boolean"
+    }
+  },
+  "default_state": {
+    "axis": "y",
+    "sticky_top": "false",
+    "sticky_bottom": "false"
+  }
+}

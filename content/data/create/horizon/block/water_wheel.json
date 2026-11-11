@@ -1,0 +1,25 @@
+{
+  "template": "minecraft:glass",
+  "item": true,
+  "properties": {
+    "hardness": 1.5,
+    "sounds": "minecraft:stripped_spruce_wood",
+    "render_shape": "MODEL"
+  },
+  "state_properties": {
+    "facing": {
+      "type": "enum",
+      "values": [
+        "down",
+        "up",
+        "north",
+        "south",
+        "west",
+        "east"
+      ]
+    }
+  },
+  "default_state": {
+    "facing": "north"
+  }
+}

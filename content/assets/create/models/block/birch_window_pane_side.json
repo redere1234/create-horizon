@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_glass_pane_side",
+  "textures": {
+    "edge": "create:block/fallback/wheel_birch_plank",
+    "pane": "create:block/fallback/birch_window"
+  }
+}

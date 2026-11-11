@@ -1,0 +1,390 @@
+// Copyright (c) 2026 create-horizon contributors
+// SPDX-License-Identifier: MIT
+// The adapter helper below is extracted unchanged. ItemStack, saved component
+// decoding and encoding are the actual Horizon types, not fixture substitutes.
+use horizon_items::{item_nbt, items::ItemStack};
+use horizon_world::nbt::Tag;
+use std::{cell::RefCell, collections::BTreeMap, io::Read};
+
+// Only recipe/prototype lookups are authored contexts. The complete plan()
+// below is unchanged production code and uses actual component-bearing stacks.
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+enum Type {
+    Haunting,
+    Splashing,
+    Smoking,
+    Blasting,
+}
+#[derive(Default)]
+struct Cache {
+    recipes: BTreeMap<Type, BTreeMap<String, Vec<(ItemStack, f32)>>>,
+}
+thread_local! { static CACHE: RefCell<Cache> = const { RefCell::new(Cache { recipes: BTreeMap::new() }) }; }
+struct Recipe {
+    id: String,
+    result: ItemStack,
+}
+#[derive(Default)]
+struct Recipes {
+    smelting: Option<Recipe>,
+    blasting: Option<Recipe>,
+    smoking: Option<Recipe>,
+}
+impl Recipes {
+    fn cook(&self, kind: &str, _: &ItemStack) -> Option<&Recipe> {
+        match kind {
+            "minecraft:smelting" => self.smelting.as_ref(),
+            "minecraft:blasting" => self.blasting.as_ref(),
+            "minecraft:smoking" => self.smoking.as_ref(),
+            _ => None,
+        }
+    }
+}
+struct Prototype {
+    fire_resistant: bool,
+}
+struct Items {
+    prototype: Prototype,
+}
+impl Items {
+    fn get(&self, _: &str) -> Option<&Prototype> {
+        Some(&self.prototype)
+    }
+}
+struct Game<'a> {
+    recipes: &'a Recipes,
+    items: Items,
+}
+impl Game<'_> {
+    fn recipes(&self) -> &Recipes {
+        self.recipes
+    }
+    fn items(&self) -> &Items {
+        &self.items
+    }
+}
+@@PLAN@@
+
+@@HELPER@@
+
+fn string(value: &str) -> Tag {
+    Tag::String(value.into())
+}
+fn resistance(types: Tag) -> Tag {
+    Tag::compound([("types", types)])
+}
+fn stack(components: Vec<(&str, Tag)>) -> ItemStack {
+    item_nbt::item_from_nbt(&Tag::compound([
+        ("id", string("minecraft:cobblestone")),
+        ("count", Tag::Int(17)),
+        ("components", Tag::compound(components)),
+    ]))
+    .unwrap()
+}
+fn check(stack: &ItemStack, prototype: bool, expected: Option<bool>) {
+    let before = item_nbt::item_to_nbt(stack);
+    let address = stack.data().map(std::ptr::from_ref);
+    assert_eq!(blasting_fire_resistance(stack, prototype), expected);
+    assert_eq!(item_nbt::item_to_nbt(stack), before);
+    assert_eq!(stack.data().map(std::ptr::from_ref), address);
+    let restored = item_nbt::item_from_nbt(&before).unwrap();
+    assert_eq!(restored, *stack);
+    assert_eq!(blasting_fire_resistance(&restored, prototype), expected);
+    assert_eq!(item_nbt::item_to_nbt(&restored), before);
+}
+fn cases() -> Vec<(String, ItemStack, bool, Option<bool>)> {
+    let mut rows = Vec::new();
+    for prototype in [false, true] {
+        rows.push((
+            "unpatched".into(),
+            stack(vec![]),
+            prototype,
+            Some(prototype),
+        ));
+        rows.push((
+            "unrelated_opaque_patch".into(),
+            stack(vec![(
+                "example:unknown",
+                Tag::compound([("payload", Tag::Long(42))]),
+            )]),
+            prototype,
+            Some(prototype),
+        ));
+        rows.push((
+            "canonical_full_fire".into(),
+            stack(vec![(
+                "minecraft:damage_resistant",
+                resistance(string("#minecraft:is_fire")),
+            )]),
+            prototype,
+            Some(true),
+        ));
+        for removal in [Tag::Compound(Default::default()), Tag::Byte(0)] {
+            rows.push((
+                "removal_presence".into(),
+                stack(vec![("!minecraft:damage_resistant", removal.clone())]),
+                prototype,
+                Some(false),
+            ));
+            rows.push((
+                "removal_wins_over_value".into(),
+                stack(vec![
+                    ("!minecraft:damage_resistant", removal),
+                    (
+                        "minecraft:damage_resistant",
+                        resistance(string("#minecraft:is_fire")),
+                    ),
+                ]),
+                prototype,
+                Some(false),
+            ));
+        }
+        for id in [
+            "minecraft:lava",
+            "minecraft:in_fire",
+            "minecraft:on_fire",
+            "minecraft:cactus",
+            "minecraft:explosion",
+            "minecraft:player_explosion",
+        ] {
+            for types in [string(id), Tag::List(vec![string(id)])] {
+                rows.push((
+                    format!("bounded_partial:{id}"),
+                    stack(vec![("minecraft:damage_resistant", resistance(types))]),
+                    prototype,
+                    Some(false),
+                ));
+            }
+        }
+        rows.push((
+            "empty_selector_set".into(),
+            stack(vec![(
+                "minecraft:damage_resistant",
+                resistance(Tag::List(vec![])),
+            )]),
+            prototype,
+            Some(false),
+        ));
+        rows.push((
+            "mixed_known_partial".into(),
+            stack(vec![(
+                "minecraft:damage_resistant",
+                resistance(Tag::List(vec![
+                    string("minecraft:lava"),
+                    string("minecraft:in_fire"),
+                    string("minecraft:cactus"),
+                ])),
+            )]),
+            prototype,
+            Some(false),
+        ));
+        for (name, value) in [
+            ("custom_tag", resistance(string("#example:fireproof"))),
+            (
+                "other_builtin_tag",
+                resistance(string("#minecraft:is_explosion")),
+            ),
+            (
+                "unmapped_direct_type",
+                resistance(string("minecraft:drowning")),
+            ),
+            (
+                "fan_damage_not_a_unit_flag",
+                resistance(string("create:fan_lava")),
+            ),
+            ("missing_types", Tag::Compound(Default::default())),
+            ("wrong_component_type", Tag::Byte(1)),
+            ("wrong_selector_type", resistance(Tag::Int(1))),
+            (
+                "wrong_list_element",
+                resistance(Tag::List(vec![Tag::Int(1)])),
+            ),
+            (
+                "tag_inside_direct_list",
+                resistance(Tag::List(vec![string("#minecraft:is_fire")])),
+            ),
+            (
+                "mixed_unknown_selector",
+                resistance(Tag::List(vec![
+                    string("minecraft:lava"),
+                    string("example:unknown"),
+                ])),
+            ),
+            ("noncanonical_alias", resistance(string("#is_fire"))),
+        ] {
+            rows.push((
+                name.into(),
+                stack(vec![("minecraft:damage_resistant", value)]),
+                prototype,
+                None,
+            ));
+        }
+    }
+    rows
+}
+fn recipe(status: u64, result: &str) -> Option<Recipe> {
+    (status > 0).then(|| Recipe {
+        id: if status == 1 {
+            "example:input_manual_only"
+        } else {
+            "example:input"
+        }
+        .into(),
+        result: ItemStack::new(result, 1),
+    })
+}
+fn main() {
+    let empty = Recipes::default();
+    let game = Game {
+        recipes: &empty,
+        items: Items {
+            prototype: Prototype {
+                fire_resistant: false,
+            },
+        },
+    };
+    for kind in [Type::Haunting, Type::Splashing, Type::Smoking] {
+        assert!(plan(&game, &stack(vec![]), kind).is_none());
+    }
+    let mut rows = Vec::new();
+    for (name, stack, prototype, expected) in cases() {
+        check(&stack, prototype, expected);
+        rows.push(serde_json::json!({"name":name,"prototype":prototype,"decision":expected}));
+    }
+    let mut input = String::new();
+    std::io::stdin().read_to_string(&mut input).unwrap();
+    let inputs: Vec<serde_json::Value> = serde_json::from_str(&input).unwrap();
+    let mut recipes = Vec::new();
+    for case in inputs {
+        let s = case["smelting"].as_u64().unwrap();
+        let b = case["blasting"].as_u64().unwrap();
+        let k = case["smoking"].as_u64().unwrap();
+        let resistant = case["resistant"].as_bool().unwrap();
+        let same = case["same"].as_bool().unwrap();
+        let chosen = if s == 2 {
+            "example:smelt"
+        } else {
+            "example:blast"
+        };
+        let cooking = Recipes {
+            smelting: recipe(s, "example:smelt"),
+            blasting: recipe(b, "example:blast"),
+            smoking: recipe(k, if same { chosen } else { "example:smoke" }),
+        };
+        let game = Game {
+            recipes: &cooking,
+            items: Items {
+                prototype: Prototype {
+                    fire_resistant: !resistant,
+                },
+            },
+        };
+        let input = if resistant {
+            stack(vec![(
+                "minecraft:damage_resistant",
+                resistance(string("#minecraft:is_fire")),
+            )])
+        } else {
+            stack(vec![(
+                "!minecraft:damage_resistant",
+                Tag::Compound(Default::default()),
+            )])
+        };
+        let result = plan(&game, &input, Type::Blasting);
+        recipes.push(serde_json::json!({
+            "can_process": result.is_some(),
+            "outputs": result.map(|rows| rows.iter().map(|(item, _)| item.item.to_string()).collect::<Vec<_>>()),
+        }));
+    }
+    println!(
+        "{}",
+        serde_json::json!({"classifications":rows,"recipes":recipes})
+    );
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn only_blasting_consumes_the_resistance_mapping() {
+        let recipes = Recipes::default();
+        let game = Game {
+            recipes: &recipes,
+            items: Items {
+                prototype: Prototype {
+                    fire_resistant: false,
+                },
+            },
+        };
+        let input = stack(vec![]);
+        for kind in [Type::Haunting, Type::Splashing, Type::Smoking] {
+            assert!(plan(&game, &input, kind).is_none());
+        }
+    }
+    #[test]
+    fn recipe_precedence_does_not_query_an_unsupported_selector() {
+        let input = stack(vec![(
+            "minecraft:damage_resistant",
+            resistance(string("#example:unknown")),
+        )]);
+        let recipes = Recipes {
+            smelting: recipe(2, "example:cooked"),
+            smoking: recipe(2, "example:cooked"),
+            ..Default::default()
+        };
+        let game = Game {
+            recipes: &recipes,
+            items: Items {
+                prototype: Prototype {
+                    fire_resistant: true,
+                },
+            },
+        };
+        assert_eq!(plan(&game, &input, Type::Blasting), Some(Vec::new()));
+    }
+    #[test]
+    fn actual_stack_saved_patch_matrix_is_immutable_and_roundtrips() {
+        for (_, stack, prototype, expected) in cases() {
+            check(&stack, prototype, expected);
+        }
+    }
+    #[test]
+    fn unrelated_components_do_not_create_or_remove_the_prototype_flag() {
+        let value = stack(vec![(
+            "minecraft:custom_data",
+            Tag::compound([("kept", Tag::Int(9))]),
+        )]);
+        check(&value, false, Some(false));
+        check(&value, true, Some(true));
+    }
+    #[test]
+    fn removed_flag_is_not_replaced_by_a_prototype_or_even_an_explicit_value() {
+        let value = stack(vec![
+            (
+                "!minecraft:damage_resistant",
+                Tag::Compound(Default::default()),
+            ),
+            (
+                "minecraft:damage_resistant",
+                resistance(string("#minecraft:is_fire")),
+            ),
+        ]);
+        check(&value, true, Some(false));
+    }
+    #[test]
+    fn a_partial_target_selector_is_not_the_original_full_fire_unit() {
+        let value = stack(vec![(
+            "minecraft:damage_resistant",
+            resistance(string("minecraft:lava")),
+        )]);
+        check(&value, true, Some(false));
+    }
+    #[test]
+    fn unresolved_tags_are_explicitly_unsupported_instead_of_destructible() {
+        let value = stack(vec![(
+            "minecraft:damage_resistant",
+            resistance(string("#example:unknown")),
+        )]);
+        check(&value, false, None);
+        check(&value, true, None);
+    }
+}

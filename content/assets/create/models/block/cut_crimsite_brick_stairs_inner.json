@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "create:block/fallback/cut_crimsite_bricks",
+    "side": "create:block/fallback/cut_crimsite_bricks",
+    "top": "create:block/fallback/cut_crimsite_bricks"
+  }
+}

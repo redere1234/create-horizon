@@ -1,0 +1,8 @@
+{
+  "template": "minecraft:deepslate_gold_ore",
+  "item": true,
+  "properties": {
+    "map_color": 11,
+    "requires_tool": true
+  }
+}

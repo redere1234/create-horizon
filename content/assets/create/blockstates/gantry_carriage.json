@@ -1,0 +1,56 @@
+{
+  "variants": {
+    "facing=down,axis_along_first=false": {
+      "model": "create:block/gantry_carriage/fallback",
+      "x": 180
+    },
+    "facing=down,axis_along_first=true": {
+      "model": "create:block/gantry_carriage/fallback",
+      "x": 180
+    },
+    "facing=up,axis_along_first=false": {
+      "model": "create:block/gantry_carriage/fallback"
+    },
+    "facing=up,axis_along_first=true": {
+      "model": "create:block/gantry_carriage/fallback"
+    },
+    "facing=north,axis_along_first=false": {
+      "model": "create:block/gantry_carriage/fallback",
+      "x": 90
+    },
+    "facing=north,axis_along_first=true": {
+      "model": "create:block/gantry_carriage/fallback",
+      "x": 90
+    },
+    "facing=south,axis_along_first=false": {
+      "model": "create:block/gantry_carriage/fallback",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,axis_along_first=true": {
+      "model": "create:block/gantry_carriage/fallback",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west,axis_along_first=false": {
+      "model": "create:block/gantry_carriage/fallback",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,axis_along_first=true": {
+      "model": "create:block/gantry_carriage/fallback",
+      "x": 90,
+      "y": 270
+    },
+    "facing=east,axis_along_first=false": {
+      "model": "create:block/gantry_carriage/fallback",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,axis_along_first=true": {
+      "model": "create:block/gantry_carriage/fallback",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

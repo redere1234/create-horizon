@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column_horizontal",
+  "textures": {
+    "side": "create:block/fallback/veridium_pillar",
+    "end": "create:block/fallback/veridium_cap"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "template": "minecraft:copper_block",
+  "item": true,
+  "properties": {
+    "occludes": false
+  },
+  "shapes": {
+    "default": [
+      [
+        0,
+        0,
+        0,
+        1,
+        0.8125,
+        1
+      ]
+    ]
+  },
+  "collision_shapes": {
+    "default": [
+      [
+        0,
+        0,
+        0,
+        1,
+        0.8125,
+        1
+      ]
+    ]
+  }
+}

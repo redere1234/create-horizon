@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "create:block/fallback/polished_cut_limestone",
+    "side": "create:block/fallback/polished_cut_limestone",
+    "top": "create:block/fallback/polished_cut_limestone"
+  }
+}

@@ -1,0 +1,259 @@
+#![allow(dead_code)]
+// Own recording context for unchanged native draw(), without Game/GPU claims.
+use std::io::BufRead;
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Axis {
+    X,
+    Y,
+    Z,
+}
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Direction {
+    North,
+    South,
+    West,
+    East,
+    Up,
+    Down,
+}
+impl Direction {
+    fn axis(self) -> Axis {
+        match self {
+            Self::North | Self::South => Axis::Z,
+            Self::West | Self::East => Axis::X,
+            _ => Axis::Y,
+        }
+    }
+    fn vector(self) -> [i32; 3] {
+        match self {
+            Self::North => [0, 0, -1],
+            Self::South => [0, 0, 1],
+            Self::West => [-1, 0, 0],
+            Self::East => [1, 0, 0],
+            Self::Up => [0, 1, 0],
+            Self::Down => [0, -1, 0],
+        }
+    }
+}
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Slope {
+    Horizontal,
+    Upward,
+    Downward,
+    Vertical,
+    Sideways,
+}
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Part {
+    Start,
+    Middle,
+    End,
+    Pulley,
+}
+type Pos = [i32; 3];
+struct Game<'a> {
+    facing: Direction,
+    slope: Slope,
+    part: Part,
+    ticks: u64,
+    marker: std::marker::PhantomData<&'a ()>,
+}
+struct ModBlockEntity {
+    id: &'static str,
+    nbt: f32,
+}
+const ID: &str = "create:belt";
+fn slope(g: &Game<'_>, _: Pos) -> Slope {
+    g.slope
+}
+fn facing(g: &Game<'_>, _: Pos) -> Direction {
+    g.facing
+}
+fn part(g: &Game<'_>, _: Pos) -> Part {
+    g.part
+}
+fn cased(_: &Game<'_>, _: Pos) -> bool {
+    false
+}
+fn draw_casing(
+    _: &Game<'_>,
+    _: &mut BlockEntityDraw,
+    _: &ModBlockEntity,
+    _: Direction,
+    _: Slope,
+    _: Part,
+) {
+    unreachable!("the oracle uses bare belts");
+}
+fn dye_name(_: &f32) -> Option<&str> {
+    None
+}
+fn axis(_: &Game<'_>, _: Pos) -> Axis {
+    Axis::X
+}
+fn number(v: &f32, _: &str) -> f32 {
+    *v
+}
+fn boolean(_: &f32, _: &str) -> bool {
+    false
+}
+fn int(_: &f32, _: &str) -> i32 {
+    0
+}
+fn belt(_: &Game<'_>, _: Pos, _: &ModBlockEntity, _: f32) {}
+struct Contents {
+    items: Vec<()>,
+}
+fn read_inventory(_: &Game<'_>, _: &ModBlockEntity) -> Contents {
+    Contents { items: vec![] }
+}
+fn draw_item(_: &Game<'_>, _: &mut BlockEntityDraw, _: Pos, _: (), _: &()) {}
+mod create_engine {
+    pub mod visual {
+        use super::super::*;
+        pub fn angle(_: f64, _: f32, _: f32) -> f32 {
+            0.
+        }
+        pub fn rotation_offset(_: Pos, _: Axis, _: bool) -> f32 {
+            0.
+        }
+        pub fn positive_axis(_: Axis) -> [f32; 3] {
+            [1., 0., 0.]
+        }
+    }
+}
+fn identity() -> [f32; 16] {
+    [
+        1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.,
+    ]
+}
+fn multiply(a: [f32; 16], b: [f32; 16]) -> [f32; 16] {
+    std::array::from_fn(|i| (0..4).map(|k| a[k * 4 + i % 4] * b[(i / 4) * 4 + k]).sum())
+}
+struct BlockEntityDraw {
+    game_time: i64,
+    partial: f32,
+    poses: Vec<[f32; 16]>,
+}
+impl BlockEntityDraw {
+    fn push(&mut self) {
+        self.poses.push(*self.poses.last().unwrap());
+    }
+    fn pop(&mut self) {
+        self.poses.pop();
+    }
+    fn apply(&mut self, m: [f32; 16]) {
+        let last = self.poses.last_mut().unwrap();
+        *last = multiply(*last, m);
+    }
+    fn translate(&mut self, p: [f32; 3]) {
+        let mut m = identity();
+        m[12..15].copy_from_slice(&p);
+        self.apply(m);
+    }
+    fn rotate_about(&mut self, axis: [f32; 3], degrees: f32, p: [f32; 3]) {
+        let (s, c) = degrees.to_radians().sin_cos();
+        let mut m = identity();
+        if axis[0] == 1. {
+            m[5] = c;
+            m[6] = s;
+            m[9] = -s;
+            m[10] = c;
+        } else if axis[1] == 1. {
+            m[0] = c;
+            m[2] = -s;
+            m[8] = s;
+            m[10] = c;
+        } else {
+            m[0] = c;
+            m[1] = s;
+            m[4] = -s;
+            m[5] = c;
+        }
+        self.translate(p);
+        self.apply(m);
+        self.translate(p.map(|v| -v));
+    }
+}
+impl Game<'_> {
+    fn native_draw_model(&self, _: &mut BlockEntityDraw, _: &str, _: u32) {}
+    fn visual_ticks(&self) -> u64 {
+        self.ticks
+    }
+}
+fn moving_model(
+    _: &Game<'_>,
+    draw: &mut BlockEntityDraw,
+    model: &str,
+    scroll: f32,
+    _: bool,
+    _: Option<&str>,
+) {
+    print!("{} 1 {scroll}", model.strip_prefix("create:block/belt/").unwrap());
+    for v in draw.poses.last().unwrap() {
+        print!(" {v}");
+    }
+    println!();
+}
+mod adapter {
+    use super::*;
+    @@YAW@@
+    @@DRAW@@
+}
+@@MOTOR@@
+fn main() {
+    if std::env::args().any(|arg| arg == "motor") {
+        let directions = [
+            ("down", Direction::Down),
+            ("up", Direction::Up),
+            ("north", Direction::North),
+            ("south", Direction::South),
+            ("west", Direction::West),
+            ("east", Direction::East),
+        ];
+        for (name, facing) in directions {
+            for (side_name, side) in directions {
+                let plan = MotorPlan {
+                    motor_facing: Some(Side(facing.vector())),
+                    side: Side(side.vector()),
+                };
+                println!("{name} {side_name} {}", plan.side_active());
+            }
+        }
+        return;
+    }
+    for line in std::io::stdin().lock().lines() {
+        let line = line.unwrap();
+        let v: Vec<_> = line.split_whitespace().collect();
+        let g = Game {
+            facing: [
+                Direction::North,
+                Direction::South,
+                Direction::West,
+                Direction::East,
+            ][v[0].parse::<usize>().unwrap()],
+            slope: [
+                Slope::Horizontal,
+                Slope::Upward,
+                Slope::Downward,
+                Slope::Vertical,
+                Slope::Sideways,
+            ][v[1].parse::<usize>().unwrap()],
+            part: [Part::Start, Part::Middle, Part::End, Part::Pulley]
+                [v[2].parse::<usize>().unwrap()],
+            ticks: v[4].parse().unwrap(),
+            marker: std::marker::PhantomData,
+        };
+        let e = ModBlockEntity {
+            id: ID,
+            nbt: v[3].parse().unwrap(),
+        };
+        let mut d = BlockEntityDraw {
+            game_time: g.ticks as i64 + 80_000,
+            partial: v[5].parse().unwrap(),
+            poses: vec![identity()],
+        };
+        assert!(adapter::draw(&g, [0; 3], &e, &mut d));
+        println!(";");
+    }
+}

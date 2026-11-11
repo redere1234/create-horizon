@@ -1,0 +1,12 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "create:block/blaze_burner_flame_scroll"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "create:block/blaze_burner_flame_superheated_scroll"
+    }
+  ]
+}

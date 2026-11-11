@@ -1,0 +1,13 @@
+{
+  "type": "create:cutting",
+  "ingredients": [
+    "minecraft:warped_hyphae"
+  ],
+  "processing_time": 50,
+  "results": [
+    {
+      "id": "minecraft:stripped_warped_hyphae",
+      "count": 1
+    }
+  ]
+}

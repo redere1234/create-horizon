@@ -1,0 +1,115 @@
+{
+  "template": "minecraft:glass",
+  "item": true,
+  "properties": {
+    "hardness": 1.5,
+    "explosion_resistance": 6,
+    "requires_tool": true,
+    "map_color": 21,
+    "sounds": "minecraft:netherite_block",
+    "render_shape": "MODEL"
+  },
+  "state_properties": {
+    "facing": {
+      "type": "enum",
+      "values": [
+        "down",
+        "north",
+        "south",
+        "west",
+        "east"
+      ]
+    }
+  },
+  "default_state": {
+    "facing": "down"
+  },
+  "shapes": {
+    "default": [
+      [
+        0,
+        0.125,
+        0,
+        0.125,
+        1,
+        1
+      ],
+      [
+        0.875,
+        0.125,
+        0,
+        1,
+        1,
+        1
+      ],
+      [
+        0.125,
+        0.125,
+        0,
+        0.875,
+        1,
+        0.125
+      ],
+      [
+        0.125,
+        0.125,
+        0.875,
+        0.875,
+        1,
+        1
+      ],
+      [
+        0.125,
+        0,
+        0.125,
+        0.875,
+        0.125,
+        0.875
+      ]
+    ]
+  },
+  "collision_shapes": {
+    "default": [
+      [
+        0,
+        0.125,
+        0,
+        0.125,
+        1,
+        1
+      ],
+      [
+        0.875,
+        0.125,
+        0,
+        1,
+        1,
+        1
+      ],
+      [
+        0.125,
+        0.125,
+        0,
+        0.875,
+        1,
+        0.125
+      ],
+      [
+        0.125,
+        0.125,
+        0.875,
+        0.875,
+        1,
+        1
+      ],
+      [
+        0.125,
+        0,
+        0.125,
+        0.875,
+        0.125,
+        0.875
+      ]
+    ]
+  }
+}

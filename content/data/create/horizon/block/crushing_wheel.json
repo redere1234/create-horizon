@@ -1,0 +1,23 @@
+{
+  "template": "minecraft:andesite",
+  "item": true,
+  "properties": {
+    "occludes": false,
+    "requires_tool": true,
+    "map_color": 6,
+    "render_shape": "ENTITYBLOCK_ANIMATED"
+  },
+  "state_properties": {
+    "axis": {
+      "type": "enum",
+      "values": [
+        "x",
+        "y",
+        "z"
+      ]
+    }
+  },
+  "default_state": {
+    "axis": "y"
+  }
+}

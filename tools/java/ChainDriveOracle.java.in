@@ -1,0 +1,159 @@
+// Authored development contexts around unchanged MIT Create method bodies.
+// Actual cached Minecraft directions and Catnip Iterate/VoxelShaper provide geometry primitives.
+import java.io.*;
+import java.util.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Direction.AxisDirection;
+import net.createmod.catnip.data.Iterate;
+import net.createmod.catnip.math.VoxelShaper;
+
+public class ChainDriveOracle {
+    static final class Part {
+        static final ChainDriveBlock.Part START=ChainDriveBlock.Part.START, MIDDLE=ChainDriveBlock.Part.MIDDLE,
+            END=ChainDriveBlock.Part.END, NONE=ChainDriveBlock.Part.NONE;
+    }
+    static final class Property<T> {}
+    static final Property<Axis> AXIS = new Property<>();
+    static final Property<ChainDriveBlock.Part> PART = new Property<>();
+    static final Property<Boolean> FIRST = new Property<>(), POWERED = new Property<>();
+    static final ChainDriveBlock CHAIN = new ChainDriveBlock();
+    static final Object AIR = new Object();
+    static class HorizontalAxisKineticBlock { static final Property<Axis> HORIZONTAL_AXIS = new Property<>(); }
+    static class HorizontalKineticBlock { static final Property<Direction> HORIZONTAL_FACING = new Property<>(); }
+    static class RotatedPillarKineticBlock { static final Property<Axis> AXIS = ChainDriveOracle.AXIS; }
+    static class DirectionalKineticBlock { static final Property<Direction> FACING = new Property<>(); }
+    static class DirectionalAxisKineticBlock { static final Property<Boolean> AXIS_ALONG_FIRST_COORDINATE = FIRST; }
+    static class BlockStateProperties { static final Property<Boolean> POWERED = ChainDriveOracle.POWERED; }
+    static final class BlockState {
+        final Object block; final Axis axis; final boolean first; final ChainDriveBlock.Part part;
+        BlockState(Object block, Axis axis, boolean first, ChainDriveBlock.Part part) {
+            this.block=block; this.axis=axis; this.first=first; this.part=part;
+        }
+        Object getBlock() { return block; }
+        boolean hasProperty(Property<?> p) { return p==AXIS || p==FIRST || p==PART; }
+        @SuppressWarnings("unchecked") <T> T getValue(Property<T> p) {
+            if(p==AXIS) return (T)axis;
+            if(p==FIRST) return (T)Boolean.valueOf(first);
+            if(p==PART) return (T)part;
+            throw new IllegalArgumentException("Unsupported context property");
+        }
+        <T> BlockState setValue(Property<T> p,T value) {
+            if(p==AXIS) return new BlockState(block,(Axis)value,first,part);
+            if(p==FIRST) return new BlockState(block,axis,(Boolean)value,part);
+            if(p==PART) return new BlockState(block,axis,first,(ChainDriveBlock.Part)value);
+            throw new IllegalArgumentException("Unsupported context property");
+        }
+        BlockState cycle(Property<Boolean> p) { return setValue(p,!getValue(p)); }
+    }
+    interface LevelReader {}
+    interface LevelAccessor extends LevelReader { BlockState getBlockState(BlockPos p); }
+    interface IRotate {
+        boolean hasShaftTowards(LevelReader w,BlockPos p,BlockState s,Direction d);
+    }
+    static class Shaft implements IRotate {
+        public boolean hasShaftTowards(LevelReader w,BlockPos p,BlockState s,Direction d) {
+            return d.getAxis()==s.axis;
+        }
+    }
+    static final Shaft SHAFT = new Shaft();
+    static final class World implements LevelAccessor {
+        final BlockState[] neighbors=new BlockState[6];
+        public BlockState getBlockState(BlockPos p) {
+            for(Direction d:Direction.values())
+                if(p.equals(BlockPos.ZERO.relative(d))) return neighbors[d.ordinal()];
+            return new BlockState(AIR,Axis.Y,false,ChainDriveBlock.Part.NONE);
+        }
+        boolean hasNeighborSignal(BlockPos p) { throw new AssertionError("Base chain has no powered property"); }
+    }
+    static final class Player {
+        final boolean shift; Player(boolean s) { shift=s; }
+        boolean isShiftKeyDown() { return shift; }
+    }
+    static class UseOnContext {
+        final World world;
+        UseOnContext(World w) { world=w; }
+        World getLevel() { return world; }
+        BlockPos getClickedPos() { return BlockPos.ZERO; }
+    }
+    static final class BlockPlaceContext extends UseOnContext {
+        final Direction look; final Player player;
+        BlockPlaceContext(World w,Direction d,boolean shift) { super(w); look=d; player=new Player(shift); }
+        Direction getNearestLookingDirection() { return look; }
+        Player getPlayer() { return player; }
+    }
+    static class Base extends RotatedPillarKineticBlock {
+        // Observed in the actual pinned Java client: axis=y, first=true, part=none.
+        BlockState defaultBlockState() { return state(15); }
+        public BlockState getRotatedBlockState(BlockState originalState,Direction targetedFace) @@BASE_WRENCH@@
+        static Axis getPreferredAxis(BlockPlaceContext context) @@PREFERRED@@
+    }
+    static final class ChainDriveBlock extends Base implements IRotate {
+        enum Part { START, MIDDLE, END, NONE }
+        static final Property<ChainDriveBlock.Part> PART=ChainDriveOracle.PART;
+        static final Property<Boolean> CONNECTED_ALONG_FIRST_COORDINATE=FIRST;
+        public BlockState getStateForPlacement(BlockPlaceContext context) @@PLACE@@
+        public BlockState updateShape(BlockState stateIn,Direction face,BlockState neighbour,
+            LevelAccessor worldIn,BlockPos currentPos,BlockPos facingPos) @@UPDATE@@
+        public BlockState getRotatedBlockState(BlockState originalState,Direction targetedFace) @@WRENCH@@
+        public BlockState updateAfterWrenched(BlockState newState,UseOnContext context) @@REBUILD@@
+        public boolean hasShaftTowards(LevelReader world,BlockPos pos,BlockState state,Direction face) @@SHAFT@@
+        static boolean areBlocksConnected(BlockState state,BlockState other,Direction facing) @@CONNECTED@@
+        static Axis getConnectionAxis(BlockState state) @@CONNECTION_AXIS@@
+    }
+    static final class ChainDriveGenerator {
+        int getXRotation(BlockState state) @@MODEL_X@@
+        int getYRotation(BlockState state) @@MODEL_Y@@
+        String getModelSuffix(BlockState state) @@MODEL_NAME@@
+    }
+    static BlockState state(int code) {
+        return new BlockState(CHAIN,Axis.values()[code/8],(code%8)/4!=0,ChainDriveBlock.Part.values()[code%4]);
+    }
+    static int code(BlockState state) {
+        return state.axis.ordinal()*8+(state.first?4:0)+state.part.ordinal();
+    }
+    static World world(Scanner in,int ports) {
+        var world=new World();
+        for(Direction d:Direction.values()) {
+            int n=in.nextInt();
+            world.neighbors[d.ordinal()]=n>=0?state(n):new BlockState(
+                (ports&(1<<d.ordinal()))!=0?SHAFT:AIR,d.getAxis(),false,ChainDriveBlock.Part.NONE);
+        }
+        return world;
+    }
+    public static void main(String[] args) throws Exception {
+        var reader=new BufferedReader(new InputStreamReader(System.in));
+        var out=new StringBuilder(); var generator=new ChainDriveGenerator();
+        for(String line;(line=reader.readLine())!=null;) {
+            var in=new Scanner(line); String op=in.next();
+            switch(op) {
+                case "U" -> {
+                    var s=state(in.nextInt()); var d=Direction.values()[in.nextInt()]; int other=in.nextInt();
+                    var neighbor=other<0?new BlockState(AIR,Axis.Y,false,ChainDriveBlock.Part.NONE):state(other);
+                    out.append(code(CHAIN.updateShape(s,d,neighbor,null,BlockPos.ZERO,BlockPos.ZERO.relative(d))));
+                }
+                case "C" -> {
+                    var a=state(in.nextInt());var b=state(in.nextInt());var d=Direction.values()[in.nextInt()];
+                    out.append(ChainDriveBlock.areBlocksConnected(a,b,d)?1:0);
+                }
+                case "M" -> {
+                    var s=state(in.nextInt());
+                    out.append(generator.getModelSuffix(s)).append(' ').append(generator.getXRotation(s)).append(' ').append(generator.getYRotation(s));
+                }
+                case "R" -> out.append(code(CHAIN.getRotatedBlockState(state(in.nextInt()),Direction.values()[in.nextInt()])));
+                case "W" -> {
+                    var s=state(in.nextInt());var d=Direction.values()[in.nextInt()];var w=world(in,0);
+                    out.append(code(CHAIN.updateAfterWrenched(CHAIN.getRotatedBlockState(s,d),new UseOnContext(w))));
+                }
+                case "P" -> {
+                    var d=Direction.values()[in.nextInt()];boolean shift=in.nextInt()!=0;int ports=in.nextInt();
+                    var w=world(in,ports);out.append(code(CHAIN.getStateForPlacement(new BlockPlaceContext(w,d,shift))));
+                }
+                default -> throw new IllegalArgumentException(op);
+            }
+            out.append('\n');
+        }
+        System.out.print(out);
+    }
+}

@@ -1,0 +1,21 @@
+use create_horizon_core::{burner::Heat, burner_visual as b};
+use std::io::{self, BufRead};
+type Matrix = [f32; 16];
+fn identity() -> Matrix {let mut a=[0.;16];for i in 0..4{a[i*5]=1.;}a}
+fn mul(a:Matrix,c:Matrix)->Matrix {std::array::from_fn(|i|{let(row,col)=(i%4,i/4);(0..4).map(|k|a[k*4+row]*c[col*4+k]).sum()})}
+fn translate(a:Matrix,x:f32,y:f32,z:f32)->Matrix {let mut c=identity();c[12]=x;c[13]=y;c[14]=z;mul(a,c)}
+fn scale(a:Matrix,s:f32)->Matrix {let mut c=identity();c[0]=s;c[5]=s;c[10]=s;mul(a,c)}
+fn rotate(a:Matrix,angle:f32)->Matrix {let(s,c)=angle.sin_cos();let mut b=identity();b[0]=c;b[2]=-s;b[8]=s;b[10]=c;mul(a,b)}
+fn centered(a:Matrix,angle:f32)->Matrix {translate(rotate(translate(a,0.5,0.5,0.5),angle),-0.5,-0.5,-0.5)}
+struct Part {model:i32,material:i32,pose:Matrix,shift:i32,uv:[f32;2]}
+fn main(){for line in io::stdin().lock().lines(){let line=line.unwrap();let a:Vec<_>=line.split_whitespace().collect();let f=|i:usize|a[i].parse::<f32>().unwrap();let n=|i:usize|a[i].parse::<i32>().unwrap();let heat=match n(0){0=>Heat::None,1=>Heat::Smouldering,2=>Heat::Fading,3=>Heat::Kindled,_=>Heat::Seething};
+ let input=b::RendererInput{heat,animation:f(1),angle:f(2),time:f(3),phase:n(4),can_draw_flame:n(5)!=0,goggles:n(6)!=0,hat:if n(7)<0{None}else{Some(n(7)==1)}};
+ let frame=b::RendererFrame::new(input);let mut parts=Vec::new();
+ let ordinary=|model,material,y,angle|Part{model,material,pose:match angle{Some(v)=>centered(translate(identity(),0.,y,0.),v),None=>translate(identity(),0.,y,0.)},shift:-1,uv:[0.;2]};
+ parts.push(ordinary(frame.head as i32,0,frame.head_y,Some(frame.angle)));
+ if let Some(g)=frame.goggles{parts.push(ordinary(if g==b::Goggles::Small{20}else{21},0,frame.head_y+0.5,Some(frame.angle)));}
+ if let Some(h)=frame.hat{let mut pose=translate(identity(),0.,frame.head_y,0.);if h.inert{pose=translate(pose,0.,0.5,0.);pose=translate(pose,0.5,0.5,0.5);pose=scale(pose,0.75);pose=translate(pose,-0.5,-0.5,-0.5);}else{pose=translate(pose,0.,0.75,0.);}pose=centered(pose,frame.angle+std::f32::consts::PI);pose=translate(pose,0.5,0.,0.5);parts.push(Part{model:if h.logistics{31}else{30},material:1,pose,shift:-1,uv:[0.;2]});}
+ if let Some(s)=frame.rods{parts.push(ordinary(if s{12}else{10},0,frame.small_y,None));parts.push(ordinary(if s{13}else{11},0,frame.large_y,None));}
+ if let Some(flame)=frame.flame{parts.push(Part{model:40,material:1,pose:centered(identity(),frame.angle),shift:i32::from(flame.superheated),uv:[flame.offset[0]*0.125,flame.offset[1]*0.25]});}
+ print!("{} ",parts.len());for p in parts{print!("{} {} {} {} {} {} ",p.model,p.material,0xf000f0,p.shift,p.uv[0],p.uv[1]);for v in p.pose{print!("{} ",v);}}println!();
+}}

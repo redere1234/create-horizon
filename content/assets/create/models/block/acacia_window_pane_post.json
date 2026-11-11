@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_glass_pane_post",
+  "textures": {
+    "edge": "create:block/fallback/wheel_acacia_plank",
+    "pane": "create:block/fallback/acacia_window"
+  }
+}

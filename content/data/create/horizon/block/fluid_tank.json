@@ -1,0 +1,31 @@
+{
+  "template": "minecraft:copper_block",
+  "item": true,
+  "properties": {
+    "occludes": false
+  },
+  "state_properties": {
+    "top": {
+      "type": "boolean"
+    },
+    "bottom": {
+      "type": "boolean"
+    },
+    "shape": {
+      "type": "enum",
+      "values": [
+        "plain",
+        "window",
+        "window_nw",
+        "window_sw",
+        "window_ne",
+        "window_se"
+      ]
+    }
+  },
+  "default_state": {
+    "top": "true",
+    "bottom": "true",
+    "shape": "window"
+  }
+}

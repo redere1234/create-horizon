@@ -1,0 +1,48 @@
+{
+  "textures": {
+    "chain": "create:block/fallback/chain_drive",
+    "axle": "create:block/fallback/chain_end",
+    "particle": "#chain",
+    "indicator": "create:block/fallback/chain_indicator_powered"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#indicator",
+          "rotation": 270
+        },
+        "up": {
+          "texture": "#indicator",
+          "rotation": 90
+        },
+        "north": {
+          "texture": "#indicator",
+          "rotation": 90
+        },
+        "south": {
+          "texture": "#indicator",
+          "rotation": 270
+        },
+        "west": {
+          "texture": "#axle",
+          "rotation": 180
+        },
+        "east": {
+          "texture": "#axle",
+          "rotation": 0
+        }
+      }
+    }
+  ]
+}

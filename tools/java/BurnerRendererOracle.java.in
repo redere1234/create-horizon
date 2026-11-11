@@ -1,0 +1,49 @@
+// Authored capture contexts around unchanged Create MIT renderer methods.
+// Actual pinned JOML and Minecraft Mth perform matrix/trigonometric operations.
+package audit;
+import java.util.*;
+import org.joml.Matrix4f;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+public class BurnerRendererOracle {
+ enum HeatLevel {NONE,SMOULDERING,FADING,KINDLED,SEETHING;boolean isAtLeast(HeatLevel v){return ordinal()>=v.ordinal();}}
+ static class PartialModel {int id;PartialModel(int id){this.id=id;}}
+ static class AllPartialModels {
+  static PartialModel BLAZE_INERT=new PartialModel(0),BLAZE_IDLE=new PartialModel(1),BLAZE_ACTIVE=new PartialModel(2),BLAZE_SUPER=new PartialModel(3),BLAZE_SUPER_ACTIVE=new PartialModel(4),
+   BLAZE_BURNER_RODS=new PartialModel(10),BLAZE_BURNER_RODS_2=new PartialModel(11),BLAZE_BURNER_SUPER_RODS=new PartialModel(12),BLAZE_BURNER_SUPER_RODS_2=new PartialModel(13),
+   BLAZE_GOGGLES_SMALL=new PartialModel(20),BLAZE_GOGGLES=new PartialModel(21),TRAIN_HAT=new PartialModel(30),LOGISTICS_HAT=new PartialModel(31),BLAZE_BURNER_FLAME=new PartialModel(40);
+ }
+ static class Level{}static class BlockState{}
+ static class PoseStack {void pushPose(){}void popPose(){}}
+ static class LightTexture {static int FULL_BRIGHT=0xf000f0;}
+ static class RenderType {int id;RenderType(int n){id=n;}static RenderType solid(){return new RenderType(0);}static RenderType cutoutMipped(){return new RenderType(1);}}
+ static class VertexConsumer {int material;VertexConsumer(int m){material=m;}}
+ static class MultiBufferSource {VertexConsumer getBuffer(RenderType t){return new VertexConsumer(t.id);}}
+ static class AnimationTickHolder {static float time;static float getRenderTime(Level l){return time;}}
+ static class Sprite {float getU0(){return 0;}float getV0(){return 0;}float getU1(){return .125f;}float getV1(){return .25f;}}
+ static class SpriteShiftEntry {int id;SpriteShiftEntry(int n){id=n;}Sprite getTarget(){return new Sprite();}}
+ static class AllSpriteShifts {static SpriteShiftEntry SUPER_BURNER_FLAME=new SpriteShiftEntry(1),BURNER_FLAME=new SpriteShiftEntry(0);}
+ static List<SuperByteBuffer> rendered=new ArrayList<>();
+ static class CachedBuffers {static SuperByteBuffer partial(PartialModel m,BlockState s){return new SuperByteBuffer(m.id);}}
+ static class SuperByteBuffer {
+  int model,light,material,shift=-1;float u,v;Matrix4f pose=new Matrix4f();SuperByteBuffer(int n){model=n;}
+  SuperByteBuffer transform(Matrix4f m){pose.mul(m);return this;}
+  SuperByteBuffer translate(double x,double y,double z){pose.translate((float)x,(float)y,(float)z);return this;}
+  SuperByteBuffer translateY(float y){return translate(0,y,0);}
+  SuperByteBuffer center(){return translate(.5,.5,.5);}SuperByteBuffer uncenter(){return translate(-.5,-.5,-.5);}
+  SuperByteBuffer scale(float n){pose.scale(n);return this;}
+  SuperByteBuffer rotateCentered(float angle,Direction d){return center().rotateY(angle).uncenter();}
+  SuperByteBuffer rotateY(float angle){pose.rotateY(angle);return this;}
+  SuperByteBuffer light(int v){light=v;return this;}
+  SuperByteBuffer shiftUVScrolling(SpriteShiftEntry s,float u,float v){shift=s.id;this.u=u;this.v=v;return this;}
+  void renderInto(PoseStack ms,VertexConsumer c){material=c.material;rendered.add(this);}
+ }
+ static PartialModel getBlazeModel(HeatLevel heatLevel,boolean blockAbove) @@MODEL@@
+ static void draw(SuperByteBuffer buffer,float horizontalAngle,PoseStack ms,VertexConsumer vc) @@DRAW@@
+ static void renderShared(PoseStack ms,Matrix4f modelTransform,MultiBufferSource bufferSource,Level level,BlockState blockState,HeatLevel heatLevel,float animation,float horizontalAngle,boolean canDrawFlame,boolean drawGoggles,PartialModel drawHat,int hashCode) @@RENDER@@
+ public static void main(String[] args){var scan=new Scanner(System.in);while(scan.hasNextLine()){
+  var a=scan.nextLine().split(" ");rendered.clear();AnimationTickHolder.time=Float.parseFloat(a[3]);int hat=Integer.parseInt(a[7]);
+  renderShared(new PoseStack(),null,new MultiBufferSource(),new Level(),new BlockState(),HeatLevel.values()[Integer.parseInt(a[0])],Float.parseFloat(a[1]),Float.parseFloat(a[2]),a[5].equals("1"),a[6].equals("1"),hat<0?null:hat==0?AllPartialModels.TRAIN_HAT:AllPartialModels.LOGISTICS_HAT,Integer.parseInt(a[4]));
+  System.out.print(rendered.size()+" ");for(var b:rendered){System.out.print(b.model+" "+b.material+" "+b.light+" "+b.shift+" "+b.u+" "+b.v+" ");for(float f:b.pose.get(new float[16]))System.out.print(f+" ");}System.out.println();
+ }}
+}

@@ -1,0 +1,20 @@
+{
+  "parent": "minecraft:block/wall_inventory",
+  "textures": {
+    "wall": "create:block/fallback/small_veridium_bricks"
+  },
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "scale": [
+        0.625,
+        0.625,
+        0.625
+      ]
+    }
+  }
+}

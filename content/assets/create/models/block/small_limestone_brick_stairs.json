@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "create:block/fallback/small_limestone_bricks",
+    "side": "create:block/fallback/small_limestone_bricks",
+    "top": "create:block/fallback/small_limestone_bricks"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "create:block/fallback/wheel_oak_plank",
+    "side": "create:block/fallback/oak_window"
+  }
+}

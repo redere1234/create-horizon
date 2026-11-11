@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column_horizontal",
+  "textures": {
+    "side": "create:block/fallback/andesite_pillar",
+    "end": "create:block/fallback/andesite_cap"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "textures": {
+    "all": "create:block/fallback/stressometer",
+    "particle": "create:block/fallback/stressometer",
+    "east": "create:block/fallback/stressometer"
+  },
+  "elements": [
+    {
+      "from": [
+        15.8,
+        3,
+        3
+      ],
+      "to": [
+        16.5,
+        13,
+        13
+      ],
+      "faces": {
+        "down": {
+          "texture": "#all",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#all",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "north": {
+          "texture": "#all",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#all",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#all",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#east",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      }
+    }
+  ]
+}

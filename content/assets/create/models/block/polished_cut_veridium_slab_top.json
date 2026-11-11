@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "create:block/fallback/polished_cut_veridium",
+    "side": "create:block/fallback/polished_cut_veridium_slab",
+    "top": "create:block/fallback/polished_cut_veridium"
+  }
+}

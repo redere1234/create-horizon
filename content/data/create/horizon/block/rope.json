@@ -1,0 +1,42 @@
+{
+  "template": "minecraft:glass",
+  "item": false,
+  "properties": {
+    "hardness": 0,
+    "occludes": false,
+    "render_shape": "MODEL",
+    "sounds": "minecraft:brown_wool"
+  },
+  "state_properties": {
+    "waterlogged": {
+      "type": "boolean"
+    }
+  },
+  "default_state": {
+    "waterlogged": "false"
+  },
+  "shapes": {
+    "default": [
+      [
+        0.375,
+        0.0,
+        0.375,
+        0.625,
+        1.0,
+        0.625
+      ]
+    ]
+  },
+  "collision_shapes": {
+    "default": [
+      [
+        0.375,
+        0.0,
+        0.375,
+        0.625,
+        1.0,
+        0.625
+      ]
+    ]
+  }
+}

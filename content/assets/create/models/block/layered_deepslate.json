@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "side": "create:block/fallback/layered_deepslate",
+    "end": "create:block/fallback/deepslate_cap"
+  }
+}

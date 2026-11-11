@@ -1,0 +1,8 @@
+newmtl beam
+map_Kd #beam
+newmtl plank
+map_Kd #plank
+newmtl end
+map_Kd #end
+newmtl iron
+map_Kd #iron

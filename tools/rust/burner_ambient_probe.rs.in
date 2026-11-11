@@ -1,0 +1,138 @@
+// Contexts for the unchanged native ambient helper. This records effect requests
+// before real providers; constructor/sampler RNG coupling is explicitly separate.
+mod horizon_core {
+    pub mod random {
+        pub trait RandomSource {}
+    }
+}
+mod horizon_world {
+    pub mod registry {
+        pub type BlockStateId = usize;
+    }
+}
+mod particles {
+    pub use crate::particle_rules::*;
+    #[derive(Clone, Copy)]
+    pub enum ParticleType {
+        LargeSmoke = 0,
+        Soul = 3,
+        Lava = 4,
+    }
+    pub struct ParticleOptions {
+        pub ty: ParticleType,
+    }
+    impl ParticleOptions {
+        pub fn simple(ty: ParticleType) -> Self {
+            Self { ty }
+        }
+    }
+    pub struct ParticleEngine {
+        pub random: crate::Random,
+        pub effects: Vec<(ParticleType, [f64; 3], [f64; 3], bool)>,
+        pub sounds: Vec<(&'static str, [f64; 3], f32, f32, bool)>,
+    }
+    impl ParticleEngine {
+        pub fn random(&mut self) -> &mut crate::Random {
+            &mut self.random
+        }
+        pub fn add_with(
+            &mut self,
+            p: &ParticleOptions,
+            pos: [f64; 3],
+            v: [f64; 3],
+            limiter: bool,
+            always: bool,
+        ) {
+            assert_eq!(limiter, always);
+            self.effects.push((p.ty, pos, v, always));
+        }
+    }
+}
+mod animate_tick {
+    pub struct State {
+        pub name: String,
+        pub properties: std::collections::BTreeMap<String, String>,
+    }
+    pub struct Registry(pub State);
+    impl Registry {
+        pub fn state(&self, _: usize) -> Option<&State> {
+            Some(&self.0)
+        }
+    }
+    pub struct AnimateContext<'a> {
+        pub registry: &'a Registry,
+    }
+}
+impl Random {
+    fn next_int_bound(&mut self, b: i32) -> Option<i32> {
+        Some(self.next_int(b))
+    }
+    fn next_boolean(&mut self) -> bool {
+        self.bits(1) != 0
+    }
+    fn next_double(&mut self) -> f64 {
+        <Self as burner_visual::Random>::next_double(self)
+    }
+}
+fn ambient_case(a: &[&str]) {
+    let lit = a[0] == "L";
+    let state = animate_tick::State {
+        name: if lit {
+            "create:lit_blaze_burner"
+        } else {
+            "create:blaze_burner"
+        }
+        .into(),
+        properties: std::collections::BTreeMap::from([
+            (
+                "blaze".into(),
+                ["none", "smouldering", "fading", "kindled", "seething"]
+                    [a[1].parse::<usize>().unwrap()]
+                .into(),
+            ),
+            (
+                "flame_type".into(),
+                if a[1] == "1" { "soul" } else { "regular" }.into(),
+            ),
+        ]),
+    };
+    let registry = animate_tick::Registry(state);
+    let mut engine = particles::ParticleEngine {
+        random: Random::new(a[2].parse().unwrap()),
+        effects: Vec::new(),
+        sounds: Vec::new(),
+    };
+    create_burner_animate(
+        &mut engine,
+        &animate_tick::AnimateContext {
+            registry: &registry,
+        },
+        0,
+        [
+            a[3].parse().unwrap(),
+            a[4].parse().unwrap(),
+            a[5].parse().unwrap(),
+        ],
+    );
+    print!("{} ", engine.effects.len());
+    for (kind, pos, v, always) in engine.effects {
+        print!("{} ", kind as u8);
+        for n in pos.into_iter().chain(v) {
+            print!("{} ", n);
+        }
+        print!("{} ", i32::from(always));
+    }
+    print!("{} ", engine.sounds.len());
+    for (_, p, volume, pitch, delay) in engine.sounds {
+        print!(
+            "{} {} {} {} {} {} ",
+            volume,
+            pitch,
+            i32::from(delay),
+            p[0],
+            p[1],
+            p[2]
+        );
+    }
+    println!("{}", engine.random.next_int(1073741824));
+}

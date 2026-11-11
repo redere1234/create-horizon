@@ -1,0 +1,7 @@
+{
+  "textures": {
+    "all": "create:block/fallback/flywheel",
+    "particle": "create:block/fallback/flywheel"
+  },
+  "elements": []
+}

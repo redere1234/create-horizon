@@ -1,0 +1,8 @@
+{
+  "template": "minecraft:gold_ore",
+  "item": true,
+  "properties": {
+    "map_color": 6,
+    "requires_tool": true
+  }
+}

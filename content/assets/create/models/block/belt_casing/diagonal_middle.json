@@ -1,0 +1,85 @@
+{
+  "textures": {
+    "all": "create:block/fallback/brass_casing",
+    "particle": "create:block/fallback/brass_casing"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        2,
+        -3.314
+      ],
+      "to": [
+        16,
+        11,
+        19.314
+      ],
+      "faces": {
+        "down": {
+          "texture": "#all",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#all",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "north": {
+          "texture": "#all",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#all",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#all",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#all",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      },
+      "rotation": {
+        "origin": [
+          8,
+          8,
+          8
+        ],
+        "axis": "x",
+        "angle": 45
+      }
+    }
+  ]
+}

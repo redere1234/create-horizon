@@ -1,0 +1,13 @@
+{
+  "template": "minecraft:iron_ingot",
+  "max_stack_size": 1,
+  "components": {
+    "minecraft:equippable": {
+      "slot": "head",
+      "equip_sound": "minecraft:item.armor.equip_generic",
+      "dispensable": true,
+      "swappable": true,
+      "damage_on_hurt": false
+    }
+  }
+}

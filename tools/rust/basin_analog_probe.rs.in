@@ -1,0 +1,59 @@
+// Actual production comparator/predicate bodies with Horizon ModBlockEntity.
+// Only registry/world lookup is isolated; no canonical decoder is copied here.
+#![allow(dead_code)]
+use horizon_client_lib::containers::{BlockEntity,ModBlockEntity,ModBlockEntityFields};
+use horizon_core::position::BlockPos;
+use horizon_items::items::ItemStack;
+use horizon_world::{nbt::{Compound,Tag},registry::BlockStateId};
+use std::{collections::HashMap,sync::Arc};
+const ID:&str="create:basin";
+struct Fact { name:Arc<str> }
+struct Facts(Fact);
+impl Facts {fn get(&self,_:BlockStateId)->&Fact{&self.0}}
+#[derive(Default)]struct World {block_entities:HashMap<(i32,i32,i32),BlockEntity>}
+struct Info{max_stack:u32}
+struct GameLevel<'a>{world:&'a World,facts:&'a Facts,items:&'a HashMap<Arc<str>,Info>}
+mod game {pub mod create_port {use crate::{ModBlockEntity,Tag};@@SUPPORTED@@}}
+mod item_drain {
+    pub const BLOCK: &str = "create:item_drain";
+    pub fn comparator(_: &crate::ModBlockEntity) -> i32 {
+        unreachable!("Drain comparator is checked by the live paired fixture");
+    }
+}
+@@RESTORE@@
+@@MAXIMUM@@
+fn component_maximum(stack:&ItemStack)->Option<u32>{stack_maximum_override(stack)}
+@@ANALOG@@
+fn main(){}
+#[cfg(test)]mod tests {
+use super::*;
+fn check(entity:ModBlockEntity,name:&str,expected:i32){
+ let before=entity.nbt.clone();let slots=entity.items.clone();let revision=entity.revision();
+ let mut world=World::default();world.block_entities.insert((1,64,2),BlockEntity::Mod(Box::new(entity)));
+ let facts=Facts(Fact{name:name.into()});let items=HashMap::new();let game=GameLevel{world:&world,facts:&facts,items:&items};
+ let mut output=-123;analog(&game,BlockPos::new(1,64,2),BlockStateId(0),&mut output);assert_eq!(output,expected);
+ let BlockEntity::Mod(after)=&world.block_entities[&(1,64,2)] else{unreachable!()};
+ assert_eq!(after.nbt,before);assert_eq!(after.items,slots);assert_eq!(after.revision(),revision);
+}
+fn entity(key:&str,size:i32,items:Vec<Option<ItemStack>>)->ModBlockEntity{
+ ModBlockEntity::new(ModBlockEntityFields{id:ID.into(),items,nbt:Compound::from([
+ (key.into(),Tag::compound([("Size",Tag::Int(size)),("Items",Tag::List(vec![Tag::compound([("Slot",Tag::Int(0)),("id",Tag::String("minecraft:iron_ingot".into())),("count",Tag::Int(3))])])),("unowned",Tag::compound([("retain",Tag::Long(923))]))])),
+ ("root_unknown".into(),Tag::ByteArray(vec![255,2,3])),]),..Default::default()})
+}
+#[test]fn unsupported_native_created_slots_fail_closed_without_touching_payload_or_identity(){
+ for key in ["InputItems","OutputItems"]{for size in [0,1,8,10]{
+  // Direct native creation can precede the first generic slot resize. This is
+  // a defensive boundary; the normal canonical decoder already sizes to18.
+  check(entity(key,size,vec![]),ID,0);
+  check(entity(key,size,vec![Some(ItemStack::new("minecraft:iron_ingot",64))]),ID,0);
+ }}
+}
+#[test]fn normal_comparator_reads_input_only_and_never_mutates_live_identity(){
+ check(entity("InputItems",9,vec![]),ID,0);
+ let mut slots=vec![None;18];slots[0]=Some(ItemStack::new("minecraft:iron_ingot",32));slots[9]=Some(ItemStack::new("minecraft:gold_ingot",64));
+ check(entity("InputItems",9,slots),ID,1);
+ check(entity("InputItems",9,(0..18).map(|_|Some(ItemStack::new("minecraft:iron_ingot",64))).collect()),ID,15);
+ let mut slots=vec![None;18];slots[9]=Some(ItemStack::new("minecraft:iron_ingot",64));check(entity("InputItems",9,slots),ID,0);
+}
+#[test]fn unrelated_block_is_not_claimed(){check(entity("InputItems",1,vec![]),"minecraft:stone",-123);}
+}

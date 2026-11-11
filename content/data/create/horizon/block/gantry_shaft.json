@@ -1,0 +1,107 @@
+{
+  "template": "minecraft:glass",
+  "item": true,
+  "properties": {
+    "hardness": 1.5,
+    "explosion_resistance": 6,
+    "occludes": false,
+    "render_shape": "MODEL",
+    "requires_tool": true,
+    "sounds": "minecraft:andesite"
+  },
+  "state_properties": {
+    "facing": {
+      "type": "enum",
+      "values": [
+        "down",
+        "up",
+        "north",
+        "south",
+        "west",
+        "east"
+      ]
+    },
+    "part": {
+      "type": "enum",
+      "values": [
+        "start",
+        "middle",
+        "end",
+        "single"
+      ]
+    },
+    "powered": {
+      "type": "boolean"
+    }
+  },
+  "default_state": {
+    "facing": "north",
+    "part": "single",
+    "powered": "false"
+  },
+  "shapes": {
+    "property": "facing",
+    "values": {
+      "up": [
+        [
+          0.25,
+          0,
+          0.25,
+          0.75,
+          1,
+          0.75
+        ]
+      ],
+      "down": [
+        [
+          0.25,
+          0,
+          0.25,
+          0.75,
+          1,
+          0.75
+        ]
+      ],
+      "east": [
+        [
+          0,
+          0.25,
+          0.25,
+          1,
+          0.75,
+          0.75
+        ]
+      ],
+      "west": [
+        [
+          0,
+          0.25,
+          0.25,
+          1,
+          0.75,
+          0.75
+        ]
+      ],
+      "north": [
+        [
+          0.25,
+          0.25,
+          0,
+          0.75,
+          0.75,
+          1
+        ]
+      ],
+      "south": [
+        [
+          0.25,
+          0.25,
+          0,
+          0.75,
+          0.75,
+          1
+        ]
+      ]
+    }
+  }
+}

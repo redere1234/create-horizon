@@ -1,0 +1,105 @@
+{
+  "textures": {
+    "all": "create:block/fallback/valve",
+    "particle": "create:block/fallback/valve",
+    "handle": "create:block/fallback/valve_handle"
+  },
+  "elements": [
+    {
+      "from": [
+        5,
+        0,
+        5
+      ],
+      "to": [
+        11,
+        16,
+        11
+      ],
+      "faces": {
+        "down": {
+          "texture": "#all"
+        },
+        "up": {
+          "texture": "#all"
+        },
+        "north": {
+          "texture": "#all"
+        },
+        "south": {
+          "texture": "#all"
+        },
+        "west": {
+          "texture": "#all"
+        },
+        "east": {
+          "texture": "#all"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        4,
+        3
+      ],
+      "to": [
+        13,
+        12,
+        13
+      ],
+      "faces": {
+        "down": {
+          "texture": "#all"
+        },
+        "up": {
+          "texture": "#all"
+        },
+        "north": {
+          "texture": "#all"
+        },
+        "south": {
+          "texture": "#all"
+        },
+        "west": {
+          "texture": "#all"
+        },
+        "east": {
+          "texture": "#all"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        12,
+        3
+      ],
+      "to": [
+        10,
+        14,
+        12
+      ],
+      "faces": {
+        "down": {
+          "texture": "#handle"
+        },
+        "up": {
+          "texture": "#handle"
+        },
+        "north": {
+          "texture": "#handle"
+        },
+        "south": {
+          "texture": "#handle"
+        },
+        "west": {
+          "texture": "#handle"
+        },
+        "east": {
+          "texture": "#handle"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "template": "minecraft:glass",
+  "item": true,
+  "properties": {
+    "hardness": 1.5,
+    "sounds": "minecraft:andesite"
+  },
+  "state_properties": {
+    "axis": {
+      "type": "enum",
+      "values": [
+        "x",
+        "y",
+        "z"
+      ]
+    }
+  },
+  "default_state": {
+    "axis": "y"
+  }
+}

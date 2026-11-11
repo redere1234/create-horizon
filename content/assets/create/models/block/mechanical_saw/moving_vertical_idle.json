@@ -1,0 +1,41 @@
+{
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "disc": "create:block/fallback/saw_disc",
+    "particle": "#disc"
+  },
+  "elements": [
+    {
+      "from": [
+        7.75,
+        1,
+        6
+      ],
+      "to": [
+        8.25,
+        15,
+        20
+      ],
+      "faces": {
+        "east": {
+          "texture": "#disc",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#disc",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      }
+    }
+  ]
+}

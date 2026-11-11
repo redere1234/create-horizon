@@ -1,0 +1,152 @@
+{
+  "template": "minecraft:glass",
+  "item": false,
+  "properties": {
+    "hardness": 1.5,
+    "explosion_resistance": 1.5,
+    "occludes": false,
+    "render_shape": "MODEL",
+    "sounds": "minecraft:piston"
+  },
+  "state_properties": {
+    "facing": {
+      "type": "enum",
+      "values": [
+        "down",
+        "up",
+        "north",
+        "south",
+        "west",
+        "east"
+      ]
+    },
+    "waterlogged": {
+      "type": "boolean"
+    },
+    "type": {
+      "type": "enum",
+      "values": [
+        "normal",
+        "sticky"
+      ]
+    }
+  },
+  "default_state": {
+    "facing": "north",
+    "waterlogged": "false",
+    "type": "normal"
+  },
+  "shapes": {
+    "property": "facing",
+    "values": {
+      "down": [
+        [
+          0.375,
+          0.25,
+          0.375,
+          0.625,
+          1.0,
+          0.625
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.25,
+          1.0
+        ]
+      ],
+      "up": [
+        [
+          0.375,
+          0.0,
+          0.375,
+          0.625,
+          0.75,
+          0.625
+        ],
+        [
+          0.0,
+          0.75,
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ],
+      "north": [
+        [
+          0.375,
+          0.375,
+          0.25,
+          0.625,
+          0.625,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          0.25
+        ]
+      ],
+      "south": [
+        [
+          0.375,
+          0.375,
+          0.0,
+          0.625,
+          0.625,
+          0.75
+        ],
+        [
+          0.0,
+          0.0,
+          0.75,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ],
+      "west": [
+        [
+          0.25,
+          0.375,
+          0.375,
+          1.0,
+          0.625,
+          0.625
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          1.0,
+          1.0
+        ]
+      ],
+      "east": [
+        [
+          0.0,
+          0.375,
+          0.375,
+          0.75,
+          0.625,
+          0.625
+        ],
+        [
+          0.75,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ]
+    }
+  }
+}

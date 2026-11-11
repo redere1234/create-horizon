@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "create:block/fallback/polished_cut_veridium",
+    "side": "create:block/fallback/polished_cut_veridium",
+    "top": "create:block/fallback/polished_cut_veridium"
+  }
+}

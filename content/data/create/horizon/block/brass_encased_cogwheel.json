@@ -1,0 +1,53 @@
+{
+  "template": "minecraft:andesite",
+  "item": true,
+  "properties": {
+    "map_color": 48,
+    "occludes": false
+  },
+  "state_properties": {
+    "axis": {
+      "type": "enum",
+      "values": [
+        "x",
+        "y",
+        "z"
+      ]
+    },
+    "top_shaft": {
+      "type": "boolean"
+    },
+    "bottom_shaft": {
+      "type": "boolean"
+    }
+  },
+  "default_state": {
+    "axis": "y",
+    "top_shaft": "false",
+    "bottom_shaft": "false"
+  },
+  "shapes": {
+    "default": [
+      [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ]
+    ]
+  },
+  "collision_shapes": {
+    "default": [
+      [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ]
+    ]
+  }
+}

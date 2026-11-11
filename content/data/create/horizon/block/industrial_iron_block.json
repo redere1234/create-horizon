@@ -1,0 +1,9 @@
+{
+  "template": "minecraft:gold_block",
+  "item": true,
+  "properties": {
+    "map_color": 21,
+    "sounds": "minecraft:netherite_block",
+    "requires_tool": true
+  }
+}

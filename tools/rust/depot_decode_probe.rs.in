@@ -1,0 +1,68 @@
+#![allow(dead_code)]
+pub use horizon_client_lib::containers;
+use horizon_client_lib::{containers::{BlockEntity,ModBlockEntity},save};
+use horizon_world::nbt::{Compound,Tag,Limits,parse_snbt,write_network,read_network};
+use std::{io::{self,BufRead},ops::ControlFlow};
+#[path = @@CODEC@@]
+mod create_inventory_codec;
+include!(@@DECODE@@);
+@@WRITER@@
+fn tag(s:&str)->Tag {let(t,n)=parse_snbt(s).unwrap();assert_eq!(n,s.len());t}
+fn decode(t:&Tag)->ModBlockEntity {match create_inventory_decode("create:depot",t){ControlFlow::Break(Some(e))=>e,_=>panic!("not depot")}}
+fn slots(e:&ModBlockEntity)->serde_json::Value{serde_json::json!(e.items.iter().map(|s|s.as_ref().map(|s|serde_json::json!({"id":s.item.as_ref(),"count":s.count}))).collect::<Vec<_>>())}
+fn bytes(t:&Tag)->Vec<u8>{write_network(t,Limits::saved()).unwrap()}
+fn main(){for line in io::stdin().lock().lines(){let t=tag(&line.unwrap());println!("{}",slots(&decode(&t)));}}
+#[cfg(test)]mod tests {
+use super::*;
+fn fixture()->Tag{tag(r#"{id:"create:depot",x:1,y:64,z:2,fixture_unknown:{v:[I;1,2,3]},Items:[{Slot:0b,id:"minecraft:diamond",count:99}],HeldItem:{Item:{id:"minecraft:iron_ingot",count:3,components:{"minecraft:custom_data":{unknown:923},"!minecraft:custom_name":{}}},Pos:.7f,PrevPos:.6f,Offset:.2f,Angle:87,Locked:1b,FanProcessingType:"create:splashing",FanProcessingTime:145,TransportUnknown:{v:42}},OutputBuffer:{Size:8,Unowned:{keep:1b},Items:[{Slot:7,id:"minecraft:gold_ingot",count:4}]}}"#)}
+#[test]fn cold_save_roundtrip_preserves_canonical_fields_components_and_transport(){
+ let original=fixture();let e=decode(&original);assert_eq!(e.items[0].as_ref().unwrap().count,3);assert_eq!(e.items[8].as_ref().unwrap().count,4);assert!(e.items[1..8].iter().all(Option::is_none));
+ let Tag::Compound(mut expected)=original else{unreachable!()};for k in ["id","x","y","z","Items"]{expected.remove(&k.into());}assert_eq!(e.nbt,expected);
+ let saved=save::block_entity_data((1,64,2),&BlockEntity::Mod(Box::new(e.clone())),"create:depot",None);
+ let wire=bytes(&saved);let(cold,used)=read_network(&wire,Limits::saved()).unwrap();assert_eq!(used,wire.len());let reloaded=decode(&cold);assert_eq!(reloaded.items,e.items);assert_eq!(reloaded.nbt,e.nbt);
+}
+#[test]fn canonical_removal_never_resurrects_generic_items(){
+ for canonical in ["","HeldItem:{}","OutputBuffer:{Size:8,Items:[]}"]{let e=decode(&tag(&format!("{{{canonical}{}Items:[{{Slot:0b,id:\"minecraft:diamond\",count:7}}]}}",if canonical.is_empty(){""}else{","})));assert!(e.items.iter().all(Option::is_none));assert!(!e.nbt.contains_key(&"Items".into()));}
+ let mut e=decode(&fixture());e.nbt.remove(&"HeldItem".into());let reloaded=decode(&save::block_entity_data((1,64,2),&BlockEntity::Mod(Box::new(e)),"create:depot",None));assert!(reloaded.items[0].is_none());assert_eq!(reloaded.items[8].as_ref().unwrap().count,4);
+}
+#[test]fn unsupported_size_is_opaque_until_restored_and_writer_cannot_truncate(){
+ for size in [-1,0,1,7,9,64,i32::MAX]{let mut t=fixture();let Tag::Compound(c)=&mut t else{unreachable!()};let Tag::Compound(b)=c.get_mut(&"OutputBuffer".into()).unwrap()else{unreachable!()};b.insert("Size".into(),Tag::Int(size));let mut e=decode(&t);assert!(!inventory_supported(&e));assert!(e.items.iter().all(Option::is_none));let before=bytes(&Tag::Compound(e.nbt.clone()));assert!(!depot_data(&mut e));assert_eq!(bytes(&Tag::Compound(e.nbt.clone())),before);
+ let Tag::Compound(b)=e.nbt.get_mut(&"OutputBuffer".into()).unwrap()else{unreachable!()};b.insert("Size".into(),Tag::Int(8));let e=decode(&Tag::Compound(e.nbt.clone()));assert_eq!(e.items[0].as_ref().unwrap().count,3);assert_eq!(e.items[8].as_ref().unwrap().count,4);}
+}
+#[test]fn write_is_idempotent_and_retains_unknown_siblings_and_transport(){let mut e=decode(&fixture());let held=e.nbt.get(&"HeldItem".into()).unwrap().clone();let unknown=e.nbt.get(&"fixture_unknown".into()).unwrap().clone();depot_data(&mut e);assert!(!depot_data(&mut e));assert_eq!(e.nbt.get(&"HeldItem".into()),Some(&held));assert_eq!(e.nbt.get(&"fixture_unknown".into()),Some(&unknown));assert_eq!(e.nbt.get(&"OutputBuffer".into()).unwrap().get("Unowned"),Some(&tag("{keep:1b}")));}
+#[test]fn unrelated_entity_keeps_generic_decoder_and_noncompound_is_rejected(){assert!(matches!(create_inventory_decode("other:entity",&fixture()),ControlFlow::Continue(())));assert!(matches!(create_inventory_decode("create:depot",&Tag::Int(1)),ControlFlow::Break(None)));}
+}
+#[cfg(test)]mod game {
+ pub struct Game<'a>{pub blocked:bool,pub calls:usize,pub marker:std::marker::PhantomData<&'a()>}
+ impl Game<'_>{pub fn native_block(&self,_:[i32;3])->&str{"create:depot"}}
+ pub mod create_port {pub fn inventory_blocked(g:&super::Game<'_>,_:[i32;3])->bool{g.blocked}}
+ pub mod create_port_basin {pub fn removed(g:&mut super::Game<'_>,_:[i32;3]){g.calls+=1}}
+ pub mod create_port_belt {pub fn destroy(g:&mut super::Game<'_>,_:[i32;3]){g.calls+=1}}
+ pub mod create_port_placement {pub fn destroy(g:&mut super::Game<'_>,_:[i32;3],_:&mut bool){g.calls+=1}}
+}
+#[cfg(test)]mod destruction {
+ include!(@@DESTROY@@);
+ #[test]fn unsupported_player_break_cancels_before_any_destruction(){for blocked in [true,false]{let mut game=crate::game::Game{blocked,calls:0,marker:std::marker::PhantomData};let mut canceled=false;create_destroy(&mut game,[1,64,2],&mut canceled);assert_eq!(canceled,blocked);assert_eq!(game.calls,if blocked{0}else{2});}}
+}
+
+#[cfg(test)] mod independent_writer_checks {
+ use super::*;
+ #[test] fn components_stay_lossless_through_the_ordinary_writer_and_binary_reload() {
+  let source=tag(r#"{HeldItem:{Item:{id:"minecraft:iron_ingot",count:99,components:{"test:unknown":{nested:[I;1,2,3]},"!minecraft:custom_name":{}}},TransportUnknown:{bytes:[B;-1b,2b]},Pos:.7f},OutputBuffer:{Size:8,BufferUnknown:{keep:1b},Items:[{Slot:7,id:"minecraft:gold_ingot",count:4,components:{"test:output":{text:"saved"}}}]},RootUnknown:{retain:19L}}"#);
+  let mut entity=decode(&source);
+  let held_components=source.get("HeldItem").unwrap().get("Item").unwrap().get("components").unwrap();
+  let output_components=source.get("OutputBuffer").unwrap().get("Items").unwrap();
+  let Tag::List(entries)=output_components else {unreachable!()};
+  let output_components=entries[0].get("components").unwrap();
+  depot_data(&mut entity);
+  assert_eq!(entity.nbt.get(&"HeldItem".into()).unwrap().get("Item").unwrap().get("components"),Some(held_components));
+  let Tag::List(written_outputs)=entity.nbt.get(&"OutputBuffer".into()).unwrap().get("Items").unwrap() else {unreachable!()};
+  assert_eq!(written_outputs[0].get("components"),Some(output_components));
+  for key in ["RootUnknown"] {assert_eq!(entity.nbt.get(&key.into()),source.get(key));}
+  assert_eq!(entity.nbt.get(&"HeldItem".into()).unwrap().get("TransportUnknown"),source.get("HeldItem").unwrap().get("TransportUnknown"));
+  assert_eq!(entity.nbt.get(&"OutputBuffer".into()).unwrap().get("BufferUnknown"),source.get("OutputBuffer").unwrap().get("BufferUnknown"));
+  let saved=save::block_entity_data((1,64,2),&BlockEntity::Mod(Box::new(entity.clone())),"create:depot",None);
+  let encoded=bytes(&saved); let (reloaded,used)=read_network(&encoded,Limits::saved()).unwrap();
+  assert_eq!(used,encoded.len()); assert_eq!(decode(&reloaded).items,entity.items); assert_eq!(decode(&reloaded).nbt,entity.nbt);
+ }
+}

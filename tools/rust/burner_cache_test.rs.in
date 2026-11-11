@@ -1,0 +1,142 @@
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use create_horizon_core::burner_visual::FrameInput;
+
+    fn identity(born: u64, changes: u64) -> ModRevision {
+        ModRevision { born, changes }
+    }
+    fn snapshot() -> ClientSnapshot {
+        ClientSnapshot {
+            heat: "kindled".into(), fuel: 1, remaining: 1777, creative: false,
+            goggles: false, trainhat: false, keys: vec!["fuelLevel".into()],
+        }
+    }
+    fn frame(entry: &mut PartState, heat: Heat) -> rules::Frame {
+        entry.visual.frame(FrameInput {
+            heat, partial: 1.0, time: 0.0, phase: entry.phase,
+            goggles: true, hat: true, stock_keeper: false,
+        }, entry.animation)
+    }
+    use create_horizon_core::burner_visual as rules;
+
+    #[test]
+    fn nbt_and_property_changes_keep_live_entity_animation_and_retained_parts() {
+        let mut cache = Client::default();
+        cache.prepare_for(1, "overworld");
+        let pos = [1,64,1];
+        let entry = cache.entry(pos, identity(7,0), Direction::North, true);
+        entry.animation.tick(true, Direction::North, 0.0);
+        assert_eq!(frame(entry, Heat::Kindled).rods, Some(false));
+        let value = entry.animation.head.value;
+        let phase = entry.phase;
+        cache.retain_live(|_| Some(identity(7,100)));
+        let same = cache.entry(pos, identity(7,100), Direction::East, true);
+        assert_eq!(same.animation.head.value, value);
+        assert_eq!(same.phase, phase);
+        // The source's existing normal rods do not turn super just because
+        // heat changes; replacement/reload must distinguish this lifetime.
+        assert_eq!(frame(same, Heat::Seething).rods, Some(false));
+    }
+    #[test]
+    fn replacement_at_same_position_gets_fresh_animation_phase_and_parts() {
+        let mut cache = Client::default();
+        let pos = [1,64,1];
+        let old = cache.entry(pos, identity(7,0), Direction::North, true);
+        old.animation.tick(true, Direction::North, 0.0);
+        frame(old, Heat::Kindled);
+        let old_phase = old.phase;
+        cache.retain_live(|_| Some(identity(8,0)));
+        assert!(cache.entries.is_empty());
+        let new = cache.entry(pos, identity(8,0), Direction::East, true);
+        assert_eq!(new.animation.head.value, 0.0);
+        assert_ne!(new.phase, old_phase);
+        assert_eq!(frame(new, Heat::Seething).rods, Some(true));
+    }
+    #[test]
+    fn chunk_unload_disposes_only_absent_entities_and_reloading_recreates() {
+        let mut cache = Client::default();
+        let a = [15,64,0];
+        let b = [16,64,0];
+        cache.entry(a, identity(1,0), Direction::North, false);
+        let b_phase = cache.entry(b, identity(2,0), Direction::South, false).phase;
+        cache.retain_live(|p| (p==b).then_some(identity(2,99)));
+        assert!(!cache.entries.contains_key(&a));
+        assert_eq!(cache.entries[&b].phase, b_phase);
+        let reloaded = cache.entry(a, identity(3,0), Direction::North, false);
+        assert_eq!(reloaded.phase, 2);
+    }
+    #[test]
+    fn level_switch_and_world_close_clear_rows_parts_and_unsaved_phases() {
+        let mut cache = Client::default();
+        cache.prepare_for(1, "overworld");
+        cache.entry([0;3], identity(1,0), Direction::North, false);
+        cache.rows_tick = Some(20);
+        cache.rows.push(Row {pos:[0;3], identity:identity(1,0), facing:Direction::North,heat:Heat::Kindled,above:false});
+        cache.prepare_for(1, "nether");
+        assert!(cache.entries.is_empty() && cache.rows.is_empty());
+        assert_eq!(cache.rows_tick, None);
+        assert_eq!(cache.entry([0;3], identity(2,0), Direction::North,false).phase,0);
+        cache.prepare_for(2, "nether");
+        assert!(cache.entries.is_empty());
+        assert_eq!(cache.next_phase,0);
+    }
+    #[test]
+    fn resource_reload_recreates_visual_handles_but_preserves_live_be_chasers() {
+        let mut cache = Client::default();
+        let pos = [0;3];
+        let entry = cache.entry(pos, identity(1,0), Direction::East, true);
+        entry.animation.tick(true,Direction::East,0.0);
+        frame(entry,Heat::Kindled);
+        assert_eq!(frame(entry,Heat::Seething).rods,Some(false));
+        let angle=entry.animation.angle.value;
+        let head=entry.animation.head.value;
+        let phase=entry.phase;
+        cache.reload_visuals(|_|true);
+        let entry=cache.entries.get_mut(&pos).unwrap();
+        assert_eq!(entry.animation.angle.value,angle);
+        assert_eq!(entry.animation.head.value,head);
+        assert_eq!(entry.phase,phase);
+        assert!(entry.identity.same_entity(identity(1,999)));
+        assert_eq!(frame(entry,Heat::Seething).rods,Some(true));
+    }
+    #[test]
+    fn actual_reset_callback_clears_both_thread_local_maps() {
+        CLIENT.with(|c|{c.borrow_mut().entry([0;3],identity(1,0),Direction::North,false);});
+        TRACE_STATE.with(|c|{c.borrow_mut().observe([0;3],identity(1,0),snapshot(),|_|Some(identity(1,0)));});
+        reset();
+        CLIENT.with(|c|assert!(c.borrow().entries.is_empty()));
+        TRACE_STATE.with(|c|assert!(c.borrow().entries.is_empty()));
+    }
+    #[test]
+    fn frozen_diagnostic_is_bounded_by_live_entities_not_elapsed_world_time() {
+        let mut cache=TraceState::default();
+        for i in 0..5000 {
+            let pos=[i,64,0];
+            cache.prepare_for(1,"overworld",6000);
+            assert!(cache.observe(pos,identity(i as u64,0),snapshot(),|p|(p==pos).then_some(identity(i as u64,0))));
+            assert_eq!(cache.entries.len(),1);
+        }
+    }
+    #[test]
+    fn diagnostic_distinguishes_replacement_but_suppresses_unchanged_nbt_updates() {
+        let mut cache=TraceState::default();
+        cache.prepare_for(1,"overworld",6000);
+        let pos=[0;3];
+        assert!(cache.observe(pos,identity(1,0),snapshot(),|_|Some(identity(1,0))));
+        assert!(!cache.observe(pos,identity(1,99),snapshot(),|_|Some(identity(1,99))));
+        assert!(cache.observe(pos,identity(2,0),snapshot(),|_|Some(identity(2,0))));
+        let mut changed=snapshot();changed.remaining=1776;
+        assert!(cache.observe(pos,identity(2,1),changed,|_|Some(identity(2,1))));
+    }
+    #[test]
+    fn diagnostic_releases_dimension_world_and_rewound_clock_entries() {
+        for (game,dimension,time) in [(1,"nether",6000),(2,"overworld",6000),(1,"overworld",5999)] {
+            let mut cache=TraceState::default();
+            cache.prepare_for(1,"overworld",6000);
+            cache.observe([0;3],identity(1,0),snapshot(),|_|Some(identity(1,0)));
+            cache.prepare_for(game,dimension,time);
+            assert!(cache.entries.is_empty());
+        }
+    }
+}

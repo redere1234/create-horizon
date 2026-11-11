@@ -1,0 +1,8 @@
+{
+  "parent": "create:block/water_wheel/wheel",
+  "textures": {
+    "beam": "create:block/fallback/wheel_acacia_beam",
+    "plank": "create:block/fallback/wheel_acacia_plank",
+    "end": "create:block/fallback/wheel_acacia_end"
+  }
+}

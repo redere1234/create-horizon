@@ -1,0 +1,48 @@
+{
+  "textures": {
+    "all": "create:block/fallback/bearing",
+    "particle": "create:block/fallback/bearing",
+    "cap": "create:block/fallback/bearing_cap",
+    "up": "create:block/fallback/bearing_cap"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        13,
+        1
+      ],
+      "to": [
+        15,
+        16,
+        15
+      ],
+      "faces": {
+        "down": {
+          "texture": "#all"
+        },
+        "up": {
+          "texture": "#up",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "north": {
+          "texture": "#all"
+        },
+        "south": {
+          "texture": "#all"
+        },
+        "west": {
+          "texture": "#all"
+        },
+        "east": {
+          "texture": "#all"
+        }
+      }
+    }
+  ]
+}

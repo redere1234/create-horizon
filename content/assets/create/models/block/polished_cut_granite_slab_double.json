@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "create:block/fallback/polished_cut_granite",
+    "side": "create:block/fallback/polished_cut_granite_slab"
+  }
+}

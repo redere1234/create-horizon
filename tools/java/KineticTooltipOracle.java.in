@@ -1,0 +1,170 @@
+// Test contexts for unchanged MIT Create methods; no Minecraft/FML client.
+// The real JDK line iterator consumes widths explicitly supplied by the native
+// CPU font fixture. This proves provider/segmentation logic, not font pixels.
+import java.nio.file.*;
+import java.nio.charset.StandardCharsets;
+import java.text.*;
+import java.util.*;
+
+public class KineticTooltipOracle {
+    static final Map<String, Map<String,String>> LANG = new HashMap<>();
+    static final Map<String,Map<String,Integer>> WIDTH = new HashMap<>();
+    static String language;
+    static int WHITE=0xffffff, GRAY=0xaaaaaa, GOLD=0xffaa00;
+    static String decode(String s) { return new String(Base64.getDecoder().decode(s),StandardCharsets.UTF_8); }
+    static String encode(String s) { return Base64.getEncoder().encodeToString(s.getBytes(StandardCharsets.UTF_8)); }
+    static String translated(String key,Object... args) {
+        String value=LANG.get(language).getOrDefault(key,key);
+        return args.length==0 ? value : String.format(Locale.ROOT,value,args);
+    }
+    record Run(String text,Integer color) {}
+    static class Component {
+        String text; Integer color; List<Component> children=new ArrayList<>();
+        Component(String text) {this.text=text;}
+        static MutableComponent literal(String text) {return new MutableComponent(text);}
+        MutableComponent copy() {
+            var c=new MutableComponent(text);c.color=color;
+            for(var child:children)c.children.add(child.copy());return c;
+        }
+        MutableComponent plainCopy() {return new MutableComponent(text);}
+        String getString() {String s=text;for(var c:children)s+=c.getString();return s;}
+        void runs(List<Run> out,Integer inherited) {
+            Integer at=color==null?inherited:color;
+            if(!text.isEmpty()) {
+                if(!out.isEmpty() && Objects.equals(out.getLast().color,at)) {
+                    var p=out.removeLast();out.add(new Run(p.text+text,at));
+                } else out.add(new Run(text,at));
+            }
+            for(var c:children)c.runs(out,at);
+        }
+    }
+    static class MutableComponent extends Component {
+        MutableComponent(String s){super(s);}
+        MutableComponent withStyle(int color){this.color=color;return this;}
+        MutableComponent withStyle(Style style){return withStyle(style.color);}
+        MutableComponent append(Component c){children.add(c);return this;}
+    }
+    record Style(int color) {}
+    static class ChatFormatting {static final int AQUA=0x55ffff,DARK_GRAY=0x555555;}
+    static class Palette {static final Palette GRAY_AND_WHITE=new Palette();}
+    static class Couple<T> {
+        final T first,second;
+        Couple(T a,T b){first=a;second=b;}
+        static <T> Couple<T> create(T a,T b){return new Couple<>(a,b);}
+        T get(boolean first){return first?this.first:second;}
+    }
+    static class Strings {static String repeat(String s,int n){return s.repeat(n);}}
+    static class Font {
+        int width(String text) {
+            Integer width=WIDTH.get(language).get(text);
+            if(width==null)throw new IllegalStateException("Missing font metric "+language+":"+encode(text));
+            return width;
+        }
+    }
+    static class Minecraft {
+        static final Minecraft INSTANCE=new Minecraft();final Font font=new Font();
+        static Minecraft getInstance(){return INSTANCE;}
+        Locale getLocale(){return Locale.forLanguageTag(language.replace('_','-'));}
+    }
+    static class LangBuilder {
+        MutableComponent value=Component.literal("");
+        LangBuilder add(Component c){value.append(c.copy());return this;}
+        LangBuilder add(LangBuilder c){return add(c.value);}
+        LangBuilder translate(String key){return add(CreateLang.translate(key));}
+        LangBuilder style(int color){value.withStyle(color);return this;}
+        LangBuilder space(){return add(Component.literal(" "));}
+        void forGoggles(List<Component> out){forGoggles(out,0);}
+        void forGoggles(List<Component> out,int extra) {
+            int n=(int)Math.ceil(4.0*(4+extra)/Minecraft.getInstance().font.width(" "));
+            out.add(Component.literal(" ".repeat(n)).append(value.copy()));
+        }
+    }
+    static class CreateLang {
+        static LangBuilder builder(){return new LangBuilder();}
+        static LangBuilder translate(String key){return builder().add(translateDirect(key));}
+        static MutableComponent translateDirect(String key,Object... args){return Component.literal(translated("create."+key,args));}
+        static LangBuilder number(double number) {
+            NumberFormat f=NumberFormat.getInstance(Minecraft.getInstance().getLocale());
+            f.setMaximumFractionDigits(2);
+            return builder().add(Component.literal(f.format(Math.abs(number)<1e-5?0:number).replace('\u00a0',' ')));
+        }
+    }
+    static class TooltipHelper {
+        static final int MAX_WIDTH_PER_LINE=200;
+        static List<Component> cutTextComponent(Component c,Palette p) {
+            return cutTextComponent(c,new Style(GRAY),new Style(WHITE),0);
+        }
+        static List<Component> cutTextComponent(Component c,Style primaryStyle,Style highlightStyle,int indent)
+        @@CUT@@
+    }
+    static class Option<T>{final T value;Option(T v){value=v;}T get(){return value;}}
+    static class ClientConfig {Option<Boolean> enableOverstressedTooltip=new Option<>(true);}
+    static class AllConfigs {static ClientConfig client(){return new ClientConfig();}}
+    static class Mth {static boolean equal(float a,float b){return Math.abs(a-b)<1e-5f;}}
+    static class StressImpact {static boolean isEnabled(){return true;}}
+    enum SpeedLevel {NONE,MEDIUM;float getSpeedValue(){return this==MEDIUM?30:0;}}
+    interface IRotate {SpeedLevel getMinimumRequiredSpeedLevel();}
+    static class Block {
+        final String id;Block(String id){this.id=id;}
+        String getDescriptionId(){return "block.create."+id;}
+    }
+    static class RotatingBlock extends Block implements IRotate {
+        RotatingBlock(String id){super(id);}
+        public SpeedLevel getMinimumRequiredSpeedLevel(){return id.equals("mechanical_mixer")?SpeedLevel.MEDIUM:SpeedLevel.NONE;}
+    }
+    static class BlockState {final Block block;BlockState(Block b){block=b;}Block getBlock(){return block;}}
+    static class TickRate {boolean frozen;boolean isFrozen(){return frozen;}}
+    static class Level {TickRate clock=new TickRate();TickRate tickRateManager(){return clock;}}
+    static class I18n {static String get(String key){return translated(key);}}
+    static class Kinetic {
+        float speed,impact;boolean overStressed;Level level=new Level();BlockState state;
+        Kinetic(String block,float rpm,boolean overload,boolean frozen) {
+            state=new BlockState(new RotatingBlock(block));speed=rpm;overStressed=overload;level.clock.frozen=frozen;
+            impact=block.equals("mechanical_press")?8:4;
+        }
+        BlockState getBlockState(){return state;}
+        float calculateStressApplied(){return impact;}
+        float getSpeed() @@SPEED@@
+        float getTheoreticalSpeed() @@THEORETICAL@@
+        boolean isSpeedRequirementFulfilled() @@REQUIREMENT@@
+        boolean addToTooltip(List<Component> tooltip,boolean isPlayerSneaking) @@HOVER@@
+        boolean addToGoggleTooltip(List<Component> tooltip,boolean isPlayerSneaking) @@GOGGLES@@
+        void addStressImpactStats(List<Component> tooltip,float stressAtBase) @@STRESS@@
+    }
+    static String quote(String s) {
+        return "\""+s.replace("\\","\\\\").replace("\"","\\\"").replace("\n","\\n").replace("\r","\\r").replace("\t","\\t")+"\"";
+    }
+    static void emit(String id,List<Component> rows) {
+        StringJoiner all=new StringJoiner(",");
+        for(var row:rows){var runs=new ArrayList<Run>();row.runs(runs,WHITE);StringJoiner line=new StringJoiner(",");
+            for(var run:runs)line.add("{\"text\":"+quote(run.text)+",\"color\":"+run.color+"}");all.add("["+line+"]");}
+        System.out.println("{\"id\":"+quote(id)+",\"rows\":["+all+"]}");
+    }
+    public static void main(String[] args) throws Exception {
+        for(String line:Files.readAllLines(Path.of(args[1]))) {
+            String[] v=line.split("\t",-1);LANG.computeIfAbsent(v[0],k->new HashMap<>()).put(v[1],decode(v[2]));
+        }
+        if(args[0].equals("words")) {
+            for(var entry:LANG.entrySet()) {
+                language=entry.getKey();var words=new TreeSet<String>();words.add(" ");
+                for(String message:List.of(translated("create.gui.contraptions.network_overstressed"),translated("create.gui.contraptions.not_fast_enough",translated("block.create.mechanical_mixer")),translated("create.gui.contraptions.not_fast_enough",translated("block.create.mechanical_press")))) {
+                    BreakIterator iterator=BreakIterator.getLineInstance(Minecraft.getInstance().getLocale());iterator.setText(message);
+                    for(int a=iterator.first(),b=iterator.next();b!=BreakIterator.DONE;a=b,b=iterator.next()) words.add(message.substring(a,b).replace("_",""));
+                }
+                for(String word:words)System.out.println(language+"\t"+encode(word));
+            }return;
+        }
+        for(String line:Files.readAllLines(Path.of(args[2]))) {
+            String[] v=line.split("\t",-1);WIDTH.computeIfAbsent(v[0],k->new HashMap<>()).put(decode(v[1]),Integer.parseInt(v[2]));
+        }
+        for(String line:Files.readAllLines(Path.of(args[3]))) {
+            String[] v=line.split("\t");language=v[1];var k=new Kinetic(v[2],Float.parseFloat(v[3]),v[4].equals("1"),v[5].equals("1"));
+            var rows=new ArrayList<Component>();boolean goggles=v[6].equals("1"),added=false;
+            if(goggles)added=k.addToGoggleTooltip(rows,false);
+            if(!rows.isEmpty())rows.add(Component.literal(""));
+            boolean hover=k.addToTooltip(rows,false);
+            if(added&&!hover)rows.removeLast();
+            emit(v[0],rows);
+        }
+    }
+}

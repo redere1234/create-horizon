@@ -1,0 +1,12 @@
+{
+  "loader": "neoforge:obj",
+  "flip_v": true,
+  "model": "create:models/block/large_water_wheel/block.obj",
+  "textures": {
+    "beam": "create:block/fallback/wheel_spruce_beam",
+    "plank": "create:block/fallback/wheel_spruce_plank",
+    "end": "create:block/fallback/wheel_spruce_end",
+    "iron": "create:block/fallback/wheel_iron",
+    "particle": "#plank"
+  }
+}

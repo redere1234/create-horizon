@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_glass_pane_side_alt",
+  "textures": {
+    "edge": "create:block/fallback/wheel_cherry_plank",
+    "pane": "create:block/fallback/cherry_window"
+  }
+}

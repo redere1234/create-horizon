@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "create:block/fallback/wheel_crimson_plank",
+    "side": "create:block/fallback/crimson_window"
+  }
+}

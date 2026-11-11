@@ -1,0 +1,2361 @@
+{
+  "schema_version": 1,
+  "provenance": {
+    "kind": "Public API input/output observations; functional schema facts only",
+    "create_version": "6.0.10",
+    "create_source_revision": "ac0c444d9828da3453ae8cc65338e8de063286fb",
+    "minecraft_version": "1.21.1",
+    "neoforge_version": "21.1.227",
+    "observed_interface": "Ordinary eight-slot inventory load and item-stack codec",
+    "scope": "Depot held/output slot item identifiers and counts; no Java implementation, bytecode, libraries, assets or original source embedded",
+    "recording": "Previously recorded permitted cases.snbt/java.log input/output pairs; independently authored Rust codec is checked against these values"
+  },
+  "cases": [
+    {
+      "snbt": "{}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{HeldItem:{Item:{id:\"minecraft:iron_ingot\",count:3}}}",
+      "slots": [
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 3
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{Items:[{Slot:0b,id:\"minecraft:diamond\",count:99}]}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Items:[{id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Items:[{Slot:0,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Items:[{Slot:7,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Items:[{Slot:8,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Items:[{Slot:-1,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Items:[{Slot:1b,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Items:[{Slot:2s,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Items:[{Slot:4294967299L,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Items:[{Slot:4.9f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Items:[{Slot:5.9d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Items:[{Slot:-.5f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Items:[{Slot:-.5d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Items:[{Slot:\"7\",id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Items:[{Slot:2147483648.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Items:[{Slot:-2147483649.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:0,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:7,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:8,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:-1,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:1b,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:2s,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:4294967299L,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:4.9f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:5.9d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:-.5f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:-.5d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:\"7\",id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:2147483648.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:-2147483649.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8b,Items:[{id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8b,Items:[{Slot:0,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8b,Items:[{Slot:7,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8b,Items:[{Slot:8,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8b,Items:[{Slot:-1,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8b,Items:[{Slot:1b,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8b,Items:[{Slot:2s,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8b,Items:[{Slot:4294967299L,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8b,Items:[{Slot:4.9f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8b,Items:[{Slot:5.9d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8b,Items:[{Slot:-.5f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8b,Items:[{Slot:-.5d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8b,Items:[{Slot:\"7\",id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8b,Items:[{Slot:2147483648.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8b,Items:[{Slot:-2147483649.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9b,Items:[{id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9b,Items:[{Slot:0,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9b,Items:[{Slot:7,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9b,Items:[{Slot:8,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9b,Items:[{Slot:-1,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9b,Items:[{Slot:1b,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9b,Items:[{Slot:2s,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9b,Items:[{Slot:4294967299L,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9b,Items:[{Slot:4.9f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9b,Items:[{Slot:5.9d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9b,Items:[{Slot:-.5f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9b,Items:[{Slot:-.5d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9b,Items:[{Slot:\"7\",id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9b,Items:[{Slot:2147483648.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9b,Items:[{Slot:-2147483649.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:7s,Items:[{id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:7s,Items:[{Slot:0,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:7s,Items:[{Slot:7,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:7s,Items:[{Slot:8,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:7s,Items:[{Slot:-1,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:7s,Items:[{Slot:1b,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:7s,Items:[{Slot:2s,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:7s,Items:[{Slot:4294967299L,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:7s,Items:[{Slot:4.9f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:7s,Items:[{Slot:5.9d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:7s,Items:[{Slot:-.5f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:7s,Items:[{Slot:-.5d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:7s,Items:[{Slot:\"7\",id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:7s,Items:[{Slot:2147483648.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:7s,Items:[{Slot:-2147483649.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9L,Items:[{id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9L,Items:[{Slot:0,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9L,Items:[{Slot:7,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9L,Items:[{Slot:8,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9L,Items:[{Slot:-1,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9L,Items:[{Slot:1b,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9L,Items:[{Slot:2s,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9L,Items:[{Slot:4294967299L,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9L,Items:[{Slot:4.9f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9L,Items:[{Slot:5.9d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9L,Items:[{Slot:-.5f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9L,Items:[{Slot:-.5d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9L,Items:[{Slot:\"7\",id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9L,Items:[{Slot:2147483648.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9L,Items:[{Slot:-2147483649.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:1.5f,Items:[{id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:1.5f,Items:[{Slot:0,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:1.5f,Items:[{Slot:7,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:1.5f,Items:[{Slot:8,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:1.5f,Items:[{Slot:-1,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:1.5f,Items:[{Slot:1b,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:1.5f,Items:[{Slot:2s,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:1.5f,Items:[{Slot:4294967299L,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:1.5f,Items:[{Slot:4.9f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:1.5f,Items:[{Slot:5.9d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:1.5f,Items:[{Slot:-.5f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:1.5f,Items:[{Slot:-.5d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:1.5f,Items:[{Slot:\"7\",id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:1.5f,Items:[{Slot:2147483648.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:1.5f,Items:[{Slot:-2147483649.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9.0d,Items:[{id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9.0d,Items:[{Slot:0,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9.0d,Items:[{Slot:7,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9.0d,Items:[{Slot:8,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9.0d,Items:[{Slot:-1,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9.0d,Items:[{Slot:1b,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9.0d,Items:[{Slot:2s,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9.0d,Items:[{Slot:4294967299L,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9.0d,Items:[{Slot:4.9f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9.0d,Items:[{Slot:5.9d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9.0d,Items:[{Slot:-.5f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9.0d,Items:[{Slot:-.5d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9.0d,Items:[{Slot:\"7\",id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9.0d,Items:[{Slot:2147483648.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:9.0d,Items:[{Slot:-2147483649.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:\"9\",Items:[{id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:\"9\",Items:[{Slot:0,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:\"9\",Items:[{Slot:7,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:\"9\",Items:[{Slot:8,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:\"9\",Items:[{Slot:-1,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:\"9\",Items:[{Slot:1b,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:\"9\",Items:[{Slot:2s,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:\"9\",Items:[{Slot:4294967299L,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:\"9\",Items:[{Slot:4.9f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:\"9\",Items:[{Slot:5.9d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:\"9\",Items:[{Slot:-.5f,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:\"9\",Items:[{Slot:-.5d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:\"9\",Items:[{Slot:\"7\",id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:\"9\",Items:[{Slot:2147483648.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:\"9\",Items:[{Slot:-2147483649.0d,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:2,id:\"minecraft:iron_ingot\",count:3},{Slot:2,id:\"minecraft:gold_ingot\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 4
+        },
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:2,id:\"minecraft:iron_ingot\",count:3},{Slot:2}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 3
+        },
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:2,id:\"minecraft:iron_ingot\",count:3},{Slot:2,id:\"minecraft:air\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 3
+        },
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{OutputBuffer:{Size:8,Items:[{Slot:2,id:\"minecraft:iron_ingot\",count:3},{Slot:2,id:\"INVALID\",count:4}]}}",
+      "slots": [
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 3
+        },
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{HeldItem:{Item:{id:\"minecraft:iron_ingot\",count:1,components:{\"minecraft:custom_data\":{marker:923}}}},OutputBuffer:{Size:8,Items:[{Slot:1,id:\"minecraft:stone\",count:1}]}}",
+      "slots": [
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:stone",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{HeldItem:{Item:{id:\"minecraft:iron_ingot\",count:2,components:{\"minecraft:custom_data\":{marker:923}}}},OutputBuffer:{Size:8,Items:[{Slot:1,id:\"minecraft:stone\",count:2}]}}",
+      "slots": [
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 2
+        },
+        null,
+        {
+          "id": "minecraft:stone",
+          "count": 2
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{HeldItem:{Item:{id:\"minecraft:iron_ingot\",count:16,components:{\"minecraft:custom_data\":{marker:923}}}},OutputBuffer:{Size:8,Items:[{Slot:1,id:\"minecraft:stone\",count:16}]}}",
+      "slots": [
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 16
+        },
+        null,
+        {
+          "id": "minecraft:stone",
+          "count": 16
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{HeldItem:{Item:{id:\"minecraft:iron_ingot\",count:64,components:{\"minecraft:custom_data\":{marker:923}}}},OutputBuffer:{Size:8,Items:[{Slot:1,id:\"minecraft:stone\",count:64}]}}",
+      "slots": [
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 64
+        },
+        null,
+        {
+          "id": "minecraft:stone",
+          "count": 64
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "snbt": "{HeldItem:{Item:{id:\"minecraft:iron_ingot\",count:99,components:{\"minecraft:custom_data\":{marker:923}}}},OutputBuffer:{Size:8,Items:[{Slot:1,id:\"minecraft:stone\",count:99}]}}",
+      "slots": [
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 99
+        },
+        null,
+        {
+          "id": "minecraft:stone",
+          "count": 99
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    }
+  ]
+}

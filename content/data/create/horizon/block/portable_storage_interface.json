@@ -1,0 +1,92 @@
+{
+  "template": "minecraft:stone",
+  "item": true,
+  "properties": {
+    "hardness": 1.5,
+    "explosion_resistance": 6,
+    "occludes": false,
+    "requires_tool": true,
+    "sounds": "minecraft:andesite"
+  },
+  "state_properties": {
+    "facing": {
+      "type": "enum",
+      "values": [
+        "down",
+        "up",
+        "north",
+        "south",
+        "west",
+        "east"
+      ]
+    }
+  },
+  "default_state": {
+    "facing": "north"
+  },
+  "shapes": {
+    "property": "facing",
+    "values": {
+      "down": [
+        [
+          0.0,
+          0.125,
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ],
+      "up": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.875,
+          1.0
+        ]
+      ],
+      "north": [
+        [
+          0.0,
+          0.0,
+          0.125,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ],
+      "south": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          0.875
+        ]
+      ],
+      "west": [
+        [
+          0.125,
+          0.0,
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ],
+      "east": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.875,
+          1.0,
+          1.0
+        ]
+      ]
+    }
+  }
+}

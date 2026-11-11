@@ -1,0 +1,50 @@
+{
+  "variants": {
+    "facing=down,powered=false": {
+      "model": "create:block/funnel/vertical_off",
+      "x": 180
+    },
+    "facing=down,powered=true": {
+      "model": "create:block/funnel/vertical_on",
+      "x": 180
+    },
+    "facing=up,powered=false": {
+      "model": "create:block/funnel/vertical_off"
+    },
+    "facing=up,powered=true": {
+      "model": "create:block/funnel/vertical_on"
+    },
+    "facing=north,powered=false": {
+      "model": "create:block/funnel/horizontal_off",
+      "y": 0
+    },
+    "facing=north,powered=true": {
+      "model": "create:block/funnel/horizontal_on",
+      "y": 0
+    },
+    "facing=south,powered=false": {
+      "model": "create:block/funnel/horizontal_off",
+      "y": 180
+    },
+    "facing=south,powered=true": {
+      "model": "create:block/funnel/horizontal_on",
+      "y": 180
+    },
+    "facing=west,powered=false": {
+      "model": "create:block/funnel/horizontal_off",
+      "y": 270
+    },
+    "facing=west,powered=true": {
+      "model": "create:block/funnel/horizontal_on",
+      "y": 270
+    },
+    "facing=east,powered=false": {
+      "model": "create:block/funnel/horizontal_off",
+      "y": 90
+    },
+    "facing=east,powered=true": {
+      "model": "create:block/funnel/horizontal_on",
+      "y": 90
+    }
+  }
+}

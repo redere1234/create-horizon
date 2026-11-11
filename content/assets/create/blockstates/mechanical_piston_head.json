@@ -1,0 +1,108 @@
+{
+  "variants": {
+    "facing=down,waterlogged=false,type=normal": {
+      "model": "create:block/mechanical_piston/normal/head",
+      "x": 180
+    },
+    "facing=down,waterlogged=false,type=sticky": {
+      "model": "create:block/mechanical_piston/sticky/head",
+      "x": 180
+    },
+    "facing=down,waterlogged=true,type=normal": {
+      "model": "create:block/mechanical_piston/normal/head",
+      "x": 180
+    },
+    "facing=down,waterlogged=true,type=sticky": {
+      "model": "create:block/mechanical_piston/sticky/head",
+      "x": 180
+    },
+    "facing=up,waterlogged=false,type=normal": {
+      "model": "create:block/mechanical_piston/normal/head"
+    },
+    "facing=up,waterlogged=false,type=sticky": {
+      "model": "create:block/mechanical_piston/sticky/head"
+    },
+    "facing=up,waterlogged=true,type=normal": {
+      "model": "create:block/mechanical_piston/normal/head"
+    },
+    "facing=up,waterlogged=true,type=sticky": {
+      "model": "create:block/mechanical_piston/sticky/head"
+    },
+    "facing=north,waterlogged=false,type=normal": {
+      "model": "create:block/mechanical_piston/normal/head",
+      "x": 90
+    },
+    "facing=north,waterlogged=false,type=sticky": {
+      "model": "create:block/mechanical_piston/sticky/head",
+      "x": 90
+    },
+    "facing=north,waterlogged=true,type=normal": {
+      "model": "create:block/mechanical_piston/normal/head",
+      "x": 90
+    },
+    "facing=north,waterlogged=true,type=sticky": {
+      "model": "create:block/mechanical_piston/sticky/head",
+      "x": 90
+    },
+    "facing=south,waterlogged=false,type=normal": {
+      "model": "create:block/mechanical_piston/normal/head",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,waterlogged=false,type=sticky": {
+      "model": "create:block/mechanical_piston/sticky/head",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,waterlogged=true,type=normal": {
+      "model": "create:block/mechanical_piston/normal/head",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,waterlogged=true,type=sticky": {
+      "model": "create:block/mechanical_piston/sticky/head",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west,waterlogged=false,type=normal": {
+      "model": "create:block/mechanical_piston/normal/head",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,waterlogged=false,type=sticky": {
+      "model": "create:block/mechanical_piston/sticky/head",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,waterlogged=true,type=normal": {
+      "model": "create:block/mechanical_piston/normal/head",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,waterlogged=true,type=sticky": {
+      "model": "create:block/mechanical_piston/sticky/head",
+      "x": 90,
+      "y": 270
+    },
+    "facing=east,waterlogged=false,type=normal": {
+      "model": "create:block/mechanical_piston/normal/head",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,waterlogged=false,type=sticky": {
+      "model": "create:block/mechanical_piston/sticky/head",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,waterlogged=true,type=normal": {
+      "model": "create:block/mechanical_piston/normal/head",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,waterlogged=true,type=sticky": {
+      "model": "create:block/mechanical_piston/sticky/head",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

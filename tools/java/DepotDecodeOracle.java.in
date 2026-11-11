@@ -1,0 +1,32 @@
+// Authored test collector; no recovered Minecraft/NeoForge source is bundled.
+// Runs the actual pinned NeoForge ItemStackHandler and Minecraft ItemStack codec.
+import java.io.*;
+import java.util.*;
+import com.google.gson.*;
+import net.minecraft.SharedConstants;
+import net.minecraft.server.Bootstrap;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.ItemStackHandler;
+public class DepotDecodeOracle {
+    public static void main(String[] args) throws Exception {
+        net.neoforged.fml.loading.LoadingModList.of(List.of(),List.of(),List.of(),List.of(),Map.of());
+        SharedConstants.tryDetectVersion(); Bootstrap.bootStrap();
+        var lookup=RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+        var reader=new BufferedReader(new InputStreamReader(System.in));
+        for(String line; (line=reader.readLine())!=null;) {
+            var tag=TagParser.parseTag(line);
+            var handler=new ItemStackHandler(8);
+            handler.deserializeNBT(lookup,tag.getCompound("OutputBuffer"));
+            var out=new JsonArray();
+            for(int i=-1;i<8;i++) {
+                var stack=i<0?ItemStack.parseOptional(lookup,tag.getCompound("HeldItem").getCompound("Item")):handler.getStackInSlot(i);
+                if(stack.isEmpty()) out.add(JsonNull.INSTANCE);
+                else { var s=new JsonObject();s.addProperty("id",BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());s.addProperty("count",stack.getCount());out.add(s); }
+            }
+            System.out.println("DEPOT "+out);
+        }
+    }
+}

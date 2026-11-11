@@ -1,0 +1,105 @@
+{
+  "textures": {
+    "body": "create:block/fallback/pump",
+    "outlet": "create:block/fallback/pump_rim",
+    "particle": "#body"
+  },
+  "elements": [
+    {
+      "from": [
+        5,
+        0,
+        5
+      ],
+      "to": [
+        11,
+        16,
+        11
+      ],
+      "faces": {
+        "down": {
+          "texture": "#body"
+        },
+        "up": {
+          "texture": "#body"
+        },
+        "north": {
+          "texture": "#body"
+        },
+        "south": {
+          "texture": "#body"
+        },
+        "west": {
+          "texture": "#body"
+        },
+        "east": {
+          "texture": "#body"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        5,
+        3
+      ],
+      "to": [
+        13,
+        11,
+        13
+      ],
+      "faces": {
+        "down": {
+          "texture": "#body"
+        },
+        "up": {
+          "texture": "#body"
+        },
+        "north": {
+          "texture": "#body"
+        },
+        "south": {
+          "texture": "#body"
+        },
+        "west": {
+          "texture": "#body"
+        },
+        "east": {
+          "texture": "#body"
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        13,
+        4
+      ],
+      "to": [
+        12,
+        15,
+        12
+      ],
+      "faces": {
+        "down": {
+          "texture": "#outlet"
+        },
+        "up": {
+          "texture": "#outlet"
+        },
+        "north": {
+          "texture": "#outlet"
+        },
+        "south": {
+          "texture": "#outlet"
+        },
+        "west": {
+          "texture": "#outlet"
+        },
+        "east": {
+          "texture": "#outlet"
+        }
+      }
+    }
+  ]
+}

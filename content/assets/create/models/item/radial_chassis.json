@@ -1,0 +1,17 @@
+{
+  "parent": "create:block/chassis_fallback/radial_chassis_y",
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "scale": [
+        0.625,
+        0.625,
+        0.625
+      ]
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.createhorizon.reference.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "BurnerRendererObservationMixin",
+    "BurnerVisualObservationMixin",
+    "DeployerActorObservationMixin"
+  ],
+  "injectors": { "defaultRequire": 1 }
+}

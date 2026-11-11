@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_glass_pane_noside",
+  "textures": {
+    "edge": "create:block/fallback/wheel_dark_oak_plank",
+    "pane": "create:block/fallback/dark_oak_window"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "create:cutting",
+  "ingredients": [
+    "minecraft:stripped_warped_stem"
+  ],
+  "processing_time": 50,
+  "results": [
+    {
+      "id": "minecraft:warped_planks",
+      "count": 6
+    }
+  ]
+}

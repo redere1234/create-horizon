@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column_horizontal",
+  "textures": {
+    "side": "create:block/fallback/diorite_pillar",
+    "end": "create:block/fallback/diorite_cap"
+  }
+}

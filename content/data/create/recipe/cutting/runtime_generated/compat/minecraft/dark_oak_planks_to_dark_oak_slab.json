@@ -1,0 +1,13 @@
+{
+  "type": "create:cutting",
+  "ingredients": [
+    "minecraft:dark_oak_planks"
+  ],
+  "processing_time": 50,
+  "results": [
+    {
+      "id": "minecraft:dark_oak_slab",
+      "count": 2
+    }
+  ]
+}

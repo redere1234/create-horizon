@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "facing=down,axis_along_first=false": {
+      "model": "create:block/fluid_valve/fallback_body",
+      "x": 90,
+      "y": 90
+    },
+    "facing=down,axis_along_first=true": {
+      "model": "create:block/fluid_valve/fallback_body",
+      "x": 90
+    },
+    "facing=up,axis_along_first=false": {
+      "model": "create:block/fluid_valve/fallback_body",
+      "x": 90,
+      "y": 90
+    },
+    "facing=up,axis_along_first=true": {
+      "model": "create:block/fluid_valve/fallback_body",
+      "x": 90
+    },
+    "facing=north,axis_along_first=false": {
+      "model": "create:block/fluid_valve/fallback_body",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north,axis_along_first=true": {
+      "model": "create:block/fluid_valve/fallback_body"
+    },
+    "facing=south,axis_along_first=false": {
+      "model": "create:block/fluid_valve/fallback_body",
+      "x": 90,
+      "y": 90
+    },
+    "facing=south,axis_along_first=true": {
+      "model": "create:block/fluid_valve/fallback_body"
+    },
+    "facing=west,axis_along_first=false": {
+      "model": "create:block/fluid_valve/fallback_body"
+    },
+    "facing=west,axis_along_first=true": {
+      "model": "create:block/fluid_valve/fallback_body",
+      "x": 90
+    },
+    "facing=east,axis_along_first=false": {
+      "model": "create:block/fluid_valve/fallback_body"
+    },
+    "facing=east,axis_along_first=true": {
+      "model": "create:block/fluid_valve/fallback_body",
+      "x": 90
+    }
+  }
+}

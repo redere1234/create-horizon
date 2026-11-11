@@ -1,0 +1,44 @@
+{
+  "template": "minecraft:glass",
+  "item": true,
+  "properties": {
+    "hardness": 3.0,
+    "explosion_resistance": 6.0,
+    "occludes": false,
+    "requires_tool": true,
+    "sounds": "minecraft:netherite_block",
+    "map_color": 21
+  },
+  "state_properties": {
+    "powered": {
+      "type": "boolean"
+    }
+  },
+  "default_state": {
+    "powered": "true"
+  },
+  "shapes": {
+    "default": [
+      [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ]
+    ]
+  },
+  "collision_shapes": {
+    "default": [
+      [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ]
+    ]
+  }
+}

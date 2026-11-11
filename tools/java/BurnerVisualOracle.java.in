@@ -1,0 +1,119 @@
+// Authored contexts around unchanged AST-exported Create methods. Catnip animation,
+// Mth, Vec3 and RandomSource execute from the player's actual pinned dependencies.
+package audit;
+import audit.BurnerVisualOracle.BlazeBurnerBlock.HeatLevel;
+import java.util.*;
+import net.createmod.catnip.animation.LerpedFloat;
+import net.createmod.catnip.animation.LerpedFloat.Chaser;
+import net.createmod.catnip.math.AngleHelper;
+import net.createmod.catnip.math.VecHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.Vec3;
+
+public class BurnerVisualOracle {
+ static class Property<T>{int key;Property(int key){this.key=key;}}
+ static class BlazeBurnerBlock {static String FACING="facing";static Property<HeatLevel>HEAT_LEVEL=new Property<>(0);enum HeatLevel {NONE,SMOULDERING,FADING,KINDLED,SEETHING;boolean isAtLeast(HeatLevel h){return ordinal()>=h.ordinal();}}
+  void animateTick(State state,Level world,BlockPos pos,RandomSource random) @@AMBIENT@@
+ }
+ static class LitBlazeBurnerBlock {enum FlameType{REGULAR,SOUL}static Property<FlameType>FLAME_TYPE=new Property<>(1);
+  void animateTick(State state,Level world,BlockPos pos,RandomSource random) @@LIT@@
+ }
+ static class PartialModel {int id;PartialModel(int id){this.id=id;}}
+ static class AllPartialModels {
+  static PartialModel BLAZE_INERT=new PartialModel(0),BLAZE_IDLE=new PartialModel(1),BLAZE_ACTIVE=new PartialModel(2),BLAZE_SUPER=new PartialModel(3),BLAZE_SUPER_ACTIVE=new PartialModel(4),
+   BLAZE_BURNER_RODS=new PartialModel(10),BLAZE_BURNER_RODS_2=new PartialModel(11),BLAZE_BURNER_SUPER_RODS=new PartialModel(12),BLAZE_BURNER_SUPER_RODS_2=new PartialModel(13),
+   BLAZE_GOGGLES_SMALL=new PartialModel(20),BLAZE_GOGGLES=new PartialModel(21),TRAIN_HAT=new PartialModel(30),LOGISTICS_HAT=new PartialModel(31),BLAZE_BURNER_FLAME=new PartialModel(40);
+ }
+ static class LightTexture {static int FULL_BRIGHT=0xf000f0;}
+ static class Translate {static Vec3 CENTER=new Vec3(.5,.5,.5);}
+ static class Models {static PartialModel partial(PartialModel model){return model;}}
+ static class InstanceTypes {static int TRANSFORMED=0;}
+ static class AllInstanceTypes {static int SCROLLING=1;}
+ static class TransformedInstance {
+  static final List<TransformedInstance> allocated=new ArrayList<>();
+  int model;float y,angle;boolean deleted;TransformedInstance(int m){model=m;allocated.add(this);}
+  TransformedInstance setIdentityTransform(){y=angle=0;return this;}
+  TransformedInstance translate(Vec3 p){y+=(float)p.y;return this;}
+  TransformedInstance translate(float x,float y,float z){this.y+=y;return this;}
+  TransformedInstance translateY(float v){y+=v;return this;}
+  TransformedInstance translateBack(Vec3 p){y-=(float)p.y;return this;}
+  TransformedInstance rotateY(float angle){this.angle=angle;return this;}
+  TransformedInstance rotateCentered(float angle,Direction axis){this.angle=angle;return this;}
+  TransformedInstance light(int light){return this;}TransformedInstance setChanged(){return this;}void delete(){if(deleted)throw new AssertionError("instance deleted twice");deleted=true;}
+ }
+ static class ScrollInstance extends TransformedInstance {float speedU,speedV,scaleU,scaleV,diffU,diffV;ScrollInstance(){super(40);}ScrollInstance position(Vec3 v){return this;}ScrollInstance light(int v){return this;}}
+ static class Provider {Instancer instancer(int kind,PartialModel m){return new Instancer(kind,m.id);}}
+ static class Instancer {int kind,model;Instancer(int k,int m){kind=k;model=m;}<T extends TransformedInstance>T createInstance(){return (T)(kind==1?new ScrollInstance():new TransformedInstance(model));}void stealInstance(TransformedInstance instance){instance.model=model;}}
+ static class Sprite {float getU0(){return 0;}float getU1(){return 1;}float getV0(){return 0;}float getV1(){return 1;}}
+ static class SpriteShiftEntry {Sprite getTarget(){return new Sprite();}Sprite getOriginal(){return new Sprite();}}
+ static class AllSpriteShifts {static SpriteShiftEntry SUPER_BURNER_FLAME=new SpriteShiftEntry(),BURNER_FLAME=new SpriteShiftEntry();}
+ static class AnimationTickHolder {static float time;static float getRenderTime(Level l){return time;}}
+ static class Shape {boolean empty;boolean isEmpty(){return empty;}}
+ static class State {Direction facing;boolean empty,soul;HeatLevel heat;@SuppressWarnings("unchecked")<T>T getValue(Property<T>p){return (T)(p.key==0?heat:soul?LitBlazeBurnerBlock.FlameType.SOUL:LitBlazeBurnerBlock.FlameType.REGULAR);}Optional<Direction>getOptionalValue(String property){return Optional.of(facing);}Shape getCollisionShape(Level l,BlockPos p){var s=new Shape();s.empty=empty;return s;}}
+ static class LocalPlayer {double x,z;boolean invisible;double getX(){return x;}double getZ(){return z;}boolean isInvisible(){return invisible;}}
+ static class Minecraft {static Minecraft mc=new Minecraft();LocalPlayer player;static Minecraft getInstance(){return mc;}}
+ static class ParticleTypes {static String LARGE_SMOKE="0",FLAME="1",SOUL_FIRE_FLAME="2",SOUL="3",LAVA="4";}
+ static class Event {String kind;double[] p,v;boolean always;Event(String k,double[] p,double[]v){kind=k;this.p=p;this.v=v;}}
+ static class SoundEvents{static String CAMPFIRE_CRACKLE="campfire";}static class SoundSource{static String BLOCKS="4";}
+ static class Level {RandomSource random;State state=new State();List<Event> events=new ArrayList<>();RandomSource getRandom(){return random;}State getBlockState(BlockPos p){return state;}
+  List<String> sounds=new ArrayList<>();void playLocalSound(double x,double y,double z,String k,String cat,float volume,float pitch,boolean delay){sounds.add(volume+" "+pitch+" "+(delay?1:0)+" "+x+" "+y+" "+z);}
+  void addAlwaysVisibleParticle(String k,boolean limiter,double x,double y,double z,double a,double b,double c){var e=new Event(k,new double[]{x,y,z},new double[]{a,b,c});e.always=true;events.add(e);}
+  void addParticle(String k,double x,double y,double z,double a,double b,double c){events.add(new Event(k,new double[]{x,y,z},new double[]{a,b,c}));}}
+ static class BlazeBurnerBlockEntity {
+  LerpedFloat headAngle=LerpedFloat.angular(),headAnimation=LerpedFloat.linear();boolean goggles,hat,stockKeeper,valid;int phase;
+  BlazeBurnerBlock.HeatLevel heat=BlazeBurnerBlock.HeatLevel.SMOULDERING;Level level=new Level();State state=new State();BlockPos worldPosition=new BlockPos(7,64,-11);
+  boolean isVirtual(){return false;}BlockPos getBlockPos(){return worldPosition;}State getBlockState(){return state;}boolean isValidBlockAbove(){return valid;}
+  BlazeBurnerBlock.HeatLevel getHeatLevelFromBlock(){return heat;}BlazeBurnerBlock.HeatLevel getHeatLevelForRender(){return stockKeeper&&!heat.isAtLeast(BlazeBurnerBlock.HeatLevel.FADING)?BlazeBurnerBlock.HeatLevel.FADING:heat;}
+  @Override public int hashCode(){return phase;}
+  void tickAnimation() @@ANIMATION@@
+  void spawnParticles(BlazeBurnerBlock.HeatLevel heatLevel,double burstMult) @@PARTICLES@@
+  void spawnParticleBurst(boolean soulFlame) @@BURST@@
+ }
+ static class BlazeBurnerRenderer {static PartialModel getBlazeModel(BlazeBurnerBlock.HeatLevel heatLevel,boolean blockAbove) @@MODEL@@}
+ static class BlazeBurnerVisual {
+  BlazeBurnerBlockEntity blockEntity;Level level;BlazeBurnerBlock.HeatLevel heatLevel=BlazeBurnerBlock.HeatLevel.SMOULDERING;boolean validBlockAbove,isInert=true;
+  TransformedInstance head=new TransformedInstance(0),smallRods,largeRods,goggles,hat;ScrollInstance flame;
+  Provider instancerProvider(){return new Provider();}Vec3 getVisualPosition(){return Vec3.ZERO;}
+  BlazeBurnerVisual(BlazeBurnerBlockEntity e){blockEntity=e;level=e.level;validBlockAbove=e.valid;}
+  void animate(float partialTicks) @@VISUAL@@
+  void setupFlameInstance() @@FLAME@@
+  void deleteVisual() @@DELETE@@
+ }
+ static int option(TransformedInstance p,int base,int divisor){return p==null?-1:(p.model-base)/divisor;}
+ static void summary(BlazeBurnerVisual v,float partial) {
+  var e=v.blockEntity;var f=v.flame;float u=f==null?0:f.speedU*AnimationTickHolder.time;float w=f==null?0:f.speedV*AnimationTickHolder.time;
+  System.out.print(e.headAngle.getValue(0)+" "+e.headAngle.getValue()+" "+e.headAnimation.getValue(0)+" "+e.headAnimation.getValue()+" "+v.head.model+" "+v.head.y+" "+v.head.angle+" "+option(v.smallRods,10,2)+" "+(f==null?-1:f.speedV==.09375f?1:0)+" "+(f==null?0:f.speedV)+" "+(v.goggles!=null?1:0)+" "+option(v.hat,30,1)+" "+(v.smallRods==null?0:v.smallRods.y)+" "+(v.largeRods==null?0:v.largeRods.y)+" "+((u-(float)Math.floor(u))*.5f)+" "+((w-(float)Math.floor(w))*.5f)+" ");
+ }
+ public static void main(String[] args){var scan=new Scanner(System.in);while(scan.hasNextLine()) {
+  var a=scan.nextLine().split(" ");
+  if(a[0].equals("D")) {
+   TransformedInstance.allocated.clear();
+   var e=new BlazeBurnerBlockEntity();e.state.facing=Direction.NORTH;e.valid=a[4].equals("1");
+   e.headAngle.startWithValue(0);e.headAnimation.startWithValue(e.valid?1:0);
+   var v=new BlazeBurnerVisual(e);
+   int[] heats={Integer.parseInt(a[1]),3,4,1,2,4};
+   for(int i=0;i<heats.length;i++) {
+    e.heat=HeatLevel.values()[heats[i]];e.goggles=a[2].equals("1")!=(i==3);e.hat=a[3].equals("1")!=(i==4);v.animate(.5f);
+    if(i==2){v.deleteVisual();v=new BlazeBurnerVisual(e);v.animate(.5f);}
+   }
+   v.deleteVisual();
+   long deleted=TransformedInstance.allocated.stream().filter(p->p.deleted).count();
+   System.out.println(TransformedInstance.allocated.size()+" "+deleted);
+  } else if(a[0].equals("S")) {
+   var e=new BlazeBurnerBlockEntity();e.state.facing=Direction.values()[Integer.parseInt(a[1])];e.phase=Integer.parseInt(a[2]);e.valid=a[3].equals("1");
+   e.headAngle.startWithValue((AngleHelper.horizontalAngle(e.state.facing)+180)%360);var v=new BlazeBurnerVisual(e);Minecraft.mc.player=new LocalPlayer();
+   for(int i=4;i<a.length;i++){var b=a[i].split(",");e.heat=BlazeBurnerBlock.HeatLevel.values()[Integer.parseInt(b[1])];e.valid=b[2].equals("1");e.goggles=b[3].equals("1");e.hat=b[4].equals("1");e.stockKeeper=b[5].equals("1");AnimationTickHolder.time=Float.parseFloat(b[6]);float partial=Float.parseFloat(b[7]);Minecraft.mc.player.x=Double.parseDouble(b[8]);Minecraft.mc.player.z=Double.parseDouble(b[9]);Minecraft.mc.player.invisible=b[10].equals("1");if(b[0].equals("1"))e.tickAnimation();if(b[0].equals("2"))v=new BlazeBurnerVisual(e);v.animate(partial);summary(v,partial);}System.out.println();
+  } else if(a[0].equals("A")||a[0].equals("L")) {
+   var l=new Level();l.random=RandomSource.create(Long.parseLong(a[2]));l.state.heat=HeatLevel.values()[Integer.parseInt(a[1])];l.state.soul=a[1].equals("1");var pos=new BlockPos(Integer.parseInt(a[3]),Integer.parseInt(a[4]),Integer.parseInt(a[5]));
+   if(a[0].equals("A"))new BlazeBurnerBlock().animateTick(l.state,l,pos,l.random);else new LitBlazeBurnerBlock().animateTick(l.state,l,pos,l.random);
+   System.out.print(l.events.size()+" ");for(var e:l.events){System.out.print(e.kind+" ");for(double v:e.p)System.out.print(v+" ");for(double v:e.v)System.out.print(v+" ");System.out.print((e.always?1:0)+" ");}System.out.print(l.sounds.size()+" ");for(String s:l.sounds)System.out.print(s+" ");System.out.println(l.random.nextInt(1073741824));
+  } else {
+   var e=new BlazeBurnerBlockEntity();e.level.random=RandomSource.create(Long.parseLong(a[2]));
+   if(a[0].equals("P")){e.level.state.empty=a[3].equals("1");e.spawnParticles(BlazeBurnerBlock.HeatLevel.values()[Integer.parseInt(a[1])],1);}else e.spawnParticleBurst(a[1].equals("1"));
+   System.out.print(e.level.events.size()+" ");for(var event:e.level.events){System.out.print(event.kind+" ");for(double n:event.p)System.out.print(n+" ");for(double n:event.v)System.out.print(n+" ");}System.out.println(e.level.random.nextInt(1073741824));
+  }
+ }}
+}

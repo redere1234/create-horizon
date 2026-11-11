@@ -1,0 +1,113 @@
+// Authored world context; BlockState, shared properties and registry are actual Horizon types.
+// Production placement functions below are extracted unchanged.
+use create_engine::{
+    chain_drive,
+    kinetics::{Axis, Kind, Node},
+    placement::{self, Direction},
+};
+use horizon_world::{chunk::BlockState, nbt::Tag, registry::{BlockRegistry, BlockStateId}};
+use serde_json::{Value, json};
+use std::{collections::BTreeMap, io::Read};
+
+struct World { pos: [i32; 3], state: BlockStateId, air: BlockStateId }
+impl World {
+    fn block(&self, x: i32, y: i32, z: i32) -> BlockStateId {
+        if [x,y,z]==self.pos { self.state } else { self.air }
+    }
+}
+struct GameLevel<'a> { registry: &'a BlockRegistry, world: World }
+mod create_port {
+    @@OWNS@@
+}
+mod candidate {
+    use super::*;
+    @@STATE_AXIS@@
+    @@STATE_PORT@@
+    @@LEVEL_AXIS@@
+    @@LEVEL_PORTS@@
+}
+mod baseline {
+    use super::*;
+    @@OLD_AXIS@@
+    @@OLD_PORTS@@
+}
+
+fn dir(state: &BlockState) -> Direction {
+    Direction::ALL.into_iter().find(|d| state.properties.get("facing").is_some_and(|v| v==d.name())).unwrap_or(Direction::North)
+}
+fn axis(state: &BlockState) -> Axis {
+    match state.properties.get("axis").map(String::as_str) {
+        Some("x")=>Axis::X, Some("y")=>Axis::Y, Some("z")=>Axis::Z,
+        _=>dir(state).axis(),
+    }
+}
+// Independent native kinetic contract. Existing Node::shaft_port is exercised;
+// non-kinetic blocks deliberately have no Node, regardless of ownership.
+fn node(state: &BlockState) -> Option<Node> {
+    let mut axis=axis(state);
+    let facing=dir(state);
+    let kind=match state.name.as_str() {
+        "create:creative_motor"=>Kind::Motor{facing:facing.vector(),rpm:32.0,capacity:16384.0},
+        "create:hand_crank"=>Kind::Motor{facing:facing.opposite().vector(),rpm:32.0,capacity:8.0},
+        "create:encased_fan"|"create:mechanical_drill"=>Kind::Consumer{facing:facing.opposite().vector(),impact:2.0},
+        "create:millstone"=>{axis=Axis::Y;Kind::Millstone},
+        "create:mechanical_mixer"=>{axis=Axis::Y;Kind::Mixer},
+        "create:gearbox"=>Kind::Gearbox,
+        "create:clutch"=>Kind::Clutch{powered:state.properties.get("powered").is_some_and(|v|v=="true")},
+        "create:gearshift"=>Kind::Gearshift{powered:state.properties.get("powered").is_some_and(|v|v=="true")},
+        "create:shaft"|"create:andesite_encased_shaft"|"create:brass_encased_shaft"|"create:encased_chain_drive"=>Kind::Shaft,
+        "create:cogwheel"=>Kind::Cog{large:false},
+        "create:large_cogwheel"=>Kind::Cog{large:true},
+        "create:mechanical_press"=>Kind::Press,
+        "create:speedometer"|"create:stressometer"=>{
+            axis=placement::gauge_axis(facing,state.properties.get("axis_along_first").is_some_and(|v|v=="true"));
+            Kind::Shaft
+        },
+        "create:water_wheel"|"create:large_water_wheel"=>Kind::WaterWheel{rpm:8.0,capacity:32.0},
+        "create:belt"=>{
+            axis=if state.properties.get("slope").is_some_and(|v|v=="sideways") {Axis::Y} else if facing.axis()==Axis::X {Axis::Z} else {Axis::X};
+            Kind::Belt{controller:[0;3],index:0,pulley:state.properties.get("part").is_some_and(|v|v!="middle"),diagonal:false}
+        },
+        _=>return None,
+    };
+    Some(Node{pos:[0;3],axis,kind})
+}
+fn main() {
+    let mut input=String::new();std::io::stdin().read_to_string(&mut input).unwrap();
+    let rows:Vec<Value>=serde_json::from_str(&input).unwrap();
+    let mut states=vec![BlockState{name:"minecraft:air".into(),properties:Default::default()}];
+    for row in &rows {
+        states.push(BlockState{name:row["name"].as_str().unwrap().into(),properties:row["properties"].as_object().unwrap().iter().map(|(k,v)|(k.clone(),v.as_str().unwrap().to_owned())).collect()});
+    }
+    let mut defaults=BTreeMap::new();
+    for (i,s) in states.iter().enumerate() { defaults.entry(s.name.clone()).or_insert(Tag::Int(i as i32)); }
+    let registry=BlockRegistry::from_nbt(&Tag::compound([
+        ("DataVersion",Tag::Int(horizon_world::DATA_VERSION)),
+        ("states",Tag::List(states.iter().map(BlockState::to_nbt).collect())),
+        ("defaults",Tag::Compound(defaults.into_iter().map(|(k,v)|(k.as_str().into(),v)).collect())),
+    ])).unwrap();
+    let mut checked=0;let mut old_wrong=0;let mut old_names=BTreeMap::<String,usize>::new();
+    let mut key_controls=BTreeMap::new();
+    for (row,s) in rows.iter().zip(states.iter().skip(1)) {
+        let id=registry.id(s).unwrap();
+        for direction in Direction::ALL {
+            let game=GameLevel{registry:&registry,world:World{pos:direction.vector(),state:id,air:BlockStateId(0)}};
+            let expected=node(s).is_some_and(|n|n.shaft_port(direction.opposite().vector()));
+            let ports=candidate::level_ports(&game,[0;3]);
+            let at=direction as usize;
+            assert_eq!(ports[at],expected,"{} {:?} {:?}",s.name,s.properties,direction);
+            assert!(ports.iter().enumerate().all(|(i,p)|i==at||!*p));
+            let old=baseline::level_ports(&game,[0;3]);
+            if old[at]!=expected {old_wrong+=1;*old_names.entry(s.name.clone()).or_default()+=1;}
+            checked+=1;
+            if direction==Direction::Down && matches!(s.name.as_str(),"create:basin"|"create:mechanical_mixer"|"create:blaze_burner") {
+                let placed=chain_drive::placement(Direction::East,false,ports,[None;6]);
+                assert_eq!(placed.axis,Axis::X,"Non-shaft below must not override horizontal look");
+                key_controls.insert(s.name.clone(),json!({"ports":ports,"chain_axis":"x","properties":row["properties"]}));
+            }
+        }
+    }
+    for name in ["create:basin","create:mechanical_mixer","create:blaze_burner","create:belt"] {assert!(old_names.contains_key(name),"Old regression missing {name}");}
+    assert!(old_wrong>0);
+    println!("{}",json!({"states":rows.len(),"face_cases":checked,"old_wrong_cases":old_wrong,"old_wrong_by_block":old_names,"controls":key_controls}));
+}

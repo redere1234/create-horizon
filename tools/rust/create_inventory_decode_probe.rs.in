@@ -1,0 +1,179 @@
+// Canonical Basin/Millstone load boundary checks. The early helper is exercised
+// directly here; actual injected save::decode_block_entity is native-build proof.
+#[cfg(test)]
+mod ordinary_inventory_checks {
+    use super::*;
+    use horizon_items::items::ItemStack;
+    use std::collections::BTreeMap;
+
+    mod basin {
+        use super::*;
+        const ID: &str = "create:basin";
+        @@BASIN@@
+        pub(super) fn write(entity: &mut ModBlockEntity) -> bool { data(entity) }
+        pub(super) fn prepare(entity: &mut ModBlockEntity) { restore(entity) }
+    }
+    mod millstone {
+        use super::*;
+        const ID: &str = "create:millstone";
+        @@MILLSTONE@@
+        pub(super) fn write(entity: &mut ModBlockEntity) -> bool { data(entity) }
+        pub(super) fn prepare(entity: &mut ModBlockEntity) { restore(entity) }
+    }
+
+    #[derive(Clone, Copy)]
+    struct Schema {
+        id: &'static str,
+        input: &'static str,
+        output: &'static str,
+        input_size: usize,
+        size: usize,
+    }
+    const SCHEMAS: [Schema; 2] = [
+        Schema { id: "create:basin", input: "InputItems", output: "OutputItems", input_size: 9, size: 18 },
+        Schema { id: "create:millstone", input: "InputInventory", output: "OutputInventory", input_size: 1, size: 10 },
+    ];
+    fn fixture(schema: Schema) -> Tag {
+        tag(&format!(r#"{{id:"{}",x:1,y:64,z:2,{}:{{Size:{},UnknownInventory:{{keep:[I;1,2,3]}},Items:[{{Slot:0,id:"minecraft:wheat",count:3,components:{{"test:unknown":{{keep:923}},"!minecraft:custom_name":{{}}}}}}]}},{}:{{Size:9,UnknownInventory:{{keep:19L}},Items:[{{Slot:8,id:"create:wheat_flour",count:4,components:{{"test:output":{{keep:1b}}}}}}]}},RootUnknown:{{keep:[B;-1b,2b]}},Items:[{{Slot:0b,id:"minecraft:diamond",count:99}}]}}"#,
+            schema.id, schema.input, schema.input_size, schema.output))
+    }
+    fn load(schema: Schema, input: &Tag) -> ModBlockEntity {
+        match create_inventory_decode(schema.id, input) {
+            ControlFlow::Break(Some(entity)) => entity,
+            _ => panic!("canonical load did not handle {}", schema.id),
+        }
+    }
+    fn prepare(schema: Schema, entity: &mut ModBlockEntity) {
+        if schema.id == "create:basin" { basin::prepare(entity) } else { millstone::prepare(entity) }
+    }
+    fn write(schema: Schema, entity: &mut ModBlockEntity) -> bool {
+        if schema.id == "create:basin" { basin::write(entity) } else { millstone::write(entity) }
+    }
+    fn save(schema: Schema, entity: ModBlockEntity) -> Tag {
+        save::block_entity_data((1,64,2), &BlockEntity::Mod(Box::new(entity)), schema.id, None)
+    }
+    fn count(entity: &ModBlockEntity, range: std::ops::Range<usize>) -> u32 {
+        entity.items[range].iter().flatten().map(|item| item.count).sum()
+    }
+    fn change_half(input: &mut Tag, key: &str, replacement: Option<Tag>) {
+        let Tag::Compound(fields) = input else { unreachable!() };
+        if let Some(replacement) = replacement { fields.insert(key.into(), replacement); }
+        else { fields.remove(&key.into()); }
+    }
+
+    // This host isolates world lookup/policy from the production Horizon hopper
+    // merge method below. The real method performs every inventory mutation.
+    type Pos = (i32, i32, i32);
+    #[derive(PartialEq, Eq)] enum Kind { Mod, Hopper }
+    struct View { kind: Kind, parts: Vec<(Pos,usize)> }
+    #[derive(Default)] struct Hopper { ticked: i64, cooldown: i32 }
+    struct Host { entity: ModBlockEntity, hoppers: BTreeMap<Pos,Hopper> }
+    impl Host {
+        fn containers(&self) -> &Self { self }
+        fn can_place(&self, _: &View, slot: usize, _: &ItemStack) -> bool { inventory_supported(&self.entity) && slot == 0 }
+        fn is_empty(&self, _: &View) -> bool { self.entity.items.iter().all(Option::is_none) }
+        fn max_stack(&self, _: &ItemStack) -> u32 { 64 }
+        fn slot_mut_at(&mut self, _: &View, slot: usize) -> Option<&mut Option<ItemStack>> { self.entity.items.get_mut(slot) }
+        @@MOVE_IN_ITEM@@
+    }
+
+    #[test]
+    fn canonical_load_precedes_live_hopper_insertion_and_first_writer() {
+        for schema in SCHEMAS {
+            let mut original = fixture(schema);
+            // Canonical-only cold load, including a stale historical bridge.
+            let Tag::Compound(fields) = &mut original else { unreachable!() };
+            fields.remove(&"Items".into());
+            fields.insert(format!("create_horizon:{}", schema.id.split(':').nth(1).unwrap()).as_str().into(), Tag::compound([(schema.input, Tag::compound([("Size", Tag::Int(schema.input_size as i32)),("Items", Tag::List(Vec::new()))]))]));
+            let loaded = load(schema, &original);
+            assert_eq!(loaded.items.len(), schema.size);
+            assert_eq!(count(&loaded,0..schema.input_size),3);
+            let mut host = Host { entity: loaded, hoppers: BTreeMap::new() };
+            let view = View { kind: Kind::Mod, parts: vec![((1,64,2),schema.size)] };
+            let one = ItemStack { count: 1, ..host.entity.items[0].as_ref().unwrap().clone() };
+            for _ in 0..5 { let (rest, moved) = host.move_in_item(None, &view, one.clone(), 0); assert!(moved); assert!(rest.is_none()); }
+            prepare(schema, &mut host.entity);
+            write(schema, &mut host.entity);
+            assert_eq!(count(&host.entity,0..schema.input_size),8);
+            assert_eq!(count(&host.entity,schema.input_size..schema.size),4);
+            let saved = save(schema, host.entity.clone());
+            // Real Horizon generic save/decode also sees all live slots.
+            let (_,BlockEntity::Mod(decoded)) = save::decode_block_entity(&saved).unwrap() else { unreachable!() };
+            assert_eq!(decoded.items,host.entity.items);
+            assert_eq!(load(schema,&saved).items,host.entity.items);
+        }
+    }
+    #[test]
+    fn removal_or_empty_canonical_half_clears_only_that_half_despite_generic_items() {
+        for schema in SCHEMAS {
+            let saved = save(schema,load(schema,&fixture(schema)));
+            for (key,range,other) in [(schema.input,0..schema.input_size,schema.input_size..schema.size),(schema.output,schema.input_size..schema.size,0..schema.input_size)] {
+                for replacement in [None,Some(tag("{}")),Some(tag("{Items:[]}")),Some(Tag::Int(1))] {
+                    let mut modified=saved.clone(); change_half(&mut modified,key,replacement);
+                    let mut entity=load(schema,&modified);
+                    assert_eq!(count(&entity,range.clone()),0);
+                    assert!(count(&entity,other.clone())>0);
+                    prepare(schema,&mut entity);write(schema,&mut entity);
+                    assert_eq!(count(&load(schema,&save(schema,entity)),range.clone()),0);
+                }
+            }
+        }
+    }
+    #[test]
+    fn unsupported_integer_sizes_are_opaque_until_corrected() {
+        for schema in SCHEMAS {
+            for (key,expected) in [(schema.input,schema.input_size),(schema.output,9)] {
+                for size in [-1,0,1,7,8,9,10,i32::MAX].into_iter().filter(|size|*size!=expected as i32) {
+                    let mut original=fixture(schema);
+                    let Tag::Compound(fields)=&mut original else {unreachable!()};
+                    let Tag::Compound(half)=fields.get_mut(&key.into()).unwrap() else {unreachable!()};
+                    half.insert("Size".into(),Tag::Int(size));
+                    let mut entity=load(schema,&original);assert!(!inventory_supported(&entity));assert!(entity.items.iter().all(Option::is_none));
+                    let before=entity.nbt.clone();prepare(schema,&mut entity);assert!(!write(schema,&mut entity));assert_eq!(entity.nbt,before);
+                    let saved=save(schema,entity);let mut reloaded=load(schema,&saved);assert!(reloaded.items.iter().all(Option::is_none));
+                    let Tag::Compound(half)=reloaded.nbt.get_mut(&key.into()).unwrap() else {unreachable!()};half.insert("Size".into(),Tag::Int(expected as i32));
+                    let recovered=load(schema,&Tag::Compound(reloaded.nbt.clone()));assert_eq!(count(&recovered,0..schema.size),7);
+                }
+            }
+        }
+    }
+    #[test]
+    fn writer_preserves_components_unknown_siblings_and_legacy_bridge_without_using_it() {
+        for schema in SCHEMAS {
+            let original=fixture(schema);let mut entity=load(schema,&original);
+            entity.nbt.insert("create_horizon:legacy_unknown".into(),tag("{keep:1b}"));
+            write(schema,&mut entity);assert!(!write(schema,&mut entity));
+            for key in [schema.input,schema.output] {
+                let old=original.get(key).unwrap();let new=entity.nbt.get(&key.into()).unwrap();
+                assert_eq!(new.get("UnknownInventory"),old.get("UnknownInventory"));
+                let Tag::List(old_items)=old.get("Items").unwrap() else {unreachable!()};let Tag::List(new_items)=new.get("Items").unwrap() else {unreachable!()};
+                assert_eq!(new_items[0].get("components"),old_items[0].get("components"));
+            }
+            assert_eq!(entity.nbt.get(&"RootUnknown".into()),original.get("RootUnknown"));
+            let saved=save(schema,entity.clone());let wire=bytes(&saved);let (cold,used)=read_network(&wire,Limits::saved()).unwrap();assert_eq!(used,wire.len());
+            let cold=load(schema,&cold);assert_eq!(cold.items,entity.items);assert_eq!(cold.nbt,entity.nbt);
+        }
+    }
+    #[test]
+    fn all_slots_are_available_for_immediate_drops_and_binary_reload() {
+        for schema in SCHEMAS {
+            let entity=load(schema,&fixture(schema));
+            assert_eq!(entity.items[schema.size-1].as_ref().unwrap().count,4);
+            let drops=BlockEntity::Mod(Box::new(entity.clone())).contents();assert_eq!(drops.iter().map(|s|s.count).sum::<u32>(),7);
+            let saved=save(schema,entity);let wire=bytes(&saved);let (cold,_)=read_network(&wire,Limits::saved()).unwrap();
+            let reloaded=load(schema,&cold);assert_eq!(BlockEntity::Mod(Box::new(reloaded)).contents(),drops);
+        }
+    }
+    #[test]
+    fn unknown_or_default_size_tags_use_pinned_dimensions_and_generic_only_stays_empty() {
+        for schema in SCHEMAS {
+            let mut original=fixture(schema);
+            for size in [Tag::Byte(42),Tag::Short(42),Tag::Long(42),Tag::String("42".into())] {
+                let Tag::Compound(fields)=&mut original else {unreachable!()};
+                for key in [schema.input,schema.output] {let Tag::Compound(half)=fields.get_mut(&key.into()).unwrap() else {unreachable!()};half.insert("Size".into(),size.clone());}
+                let entity=load(schema,&original);assert!(inventory_supported(&entity));assert_eq!(count(&entity,0..schema.size),7);
+            }
+            let empty=load(schema,&tag("{Items:[{Slot:0b,id:\"minecraft:diamond\",count:99}]}"));assert_eq!(empty.items.len(),schema.size);assert!(empty.items.iter().all(Option::is_none));
+        }
+    }
+}

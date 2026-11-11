@@ -1,0 +1,7 @@
+{
+  "template": "minecraft:iron_ingot",
+  "max_stack_size": 64,
+  "components": {
+    "minecraft:enchantment_glint_override": true
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "template": "minecraft:glass",
+  "item": true,
+  "properties": {
+    "hardness": 1.5,
+    "explosion_resistance": 6,
+    "requires_tool": true,
+    "map_color": 34,
+    "render_shape": "MODEL",
+    "sounds": "minecraft:andesite"
+  },
+  "state_properties": {
+    "facing": {
+      "type": "enum",
+      "values": [
+        "down",
+        "up",
+        "north",
+        "south",
+        "west",
+        "east"
+      ]
+    }
+  },
+  "default_state": {
+    "facing": "north"
+  },
+  "shapes": {
+    "default": [
+      [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ]
+    ]
+  },
+  "collision_shapes": {
+    "default": [
+      [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ]
+    ]
+  }
+}

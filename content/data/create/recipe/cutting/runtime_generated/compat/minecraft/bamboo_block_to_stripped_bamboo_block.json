@@ -1,0 +1,13 @@
+{
+  "type": "create:cutting",
+  "ingredients": [
+    "minecraft:bamboo_block"
+  ],
+  "processing_time": 50,
+  "results": [
+    {
+      "id": "minecraft:stripped_bamboo_block",
+      "count": 1
+    }
+  ]
+}

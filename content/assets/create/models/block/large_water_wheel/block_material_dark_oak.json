@@ -1,0 +1,8 @@
+{
+  "parent": "create:block/large_water_wheel/block",
+  "textures": {
+    "beam": "create:block/fallback/wheel_dark_oak_beam",
+    "plank": "create:block/fallback/wheel_dark_oak_plank",
+    "end": "create:block/fallback/wheel_dark_oak_end"
+  }
+}

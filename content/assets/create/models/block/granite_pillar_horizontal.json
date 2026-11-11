@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column_horizontal",
+  "textures": {
+    "side": "create:block/fallback/granite_pillar",
+    "end": "create:block/fallback/granite_cap"
+  }
+}

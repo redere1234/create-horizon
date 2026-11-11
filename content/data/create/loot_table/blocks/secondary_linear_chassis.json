@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "create:blocks/secondary_linear_chassis",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "create:secondary_linear_chassis"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

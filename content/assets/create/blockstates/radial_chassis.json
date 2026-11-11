@@ -1,0 +1,139 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "axis": "x"
+      },
+      "apply": {
+        "model": "create:block/chassis_fallback/radial_chassis_y",
+        "x": 90,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "axis": "x",
+        "sticky_north": "true"
+      },
+      "apply": {
+        "model": "create:block/chassis_fallback/sticky_up"
+      }
+    },
+    {
+      "when": {
+        "axis": "x",
+        "sticky_south": "true"
+      },
+      "apply": {
+        "model": "create:block/chassis_fallback/sticky_down"
+      }
+    },
+    {
+      "when": {
+        "axis": "x",
+        "sticky_east": "true"
+      },
+      "apply": {
+        "model": "create:block/chassis_fallback/sticky_south"
+      }
+    },
+    {
+      "when": {
+        "axis": "x",
+        "sticky_west": "true"
+      },
+      "apply": {
+        "model": "create:block/chassis_fallback/sticky_north"
+      }
+    },
+    {
+      "when": {
+        "axis": "y"
+      },
+      "apply": {
+        "model": "create:block/chassis_fallback/radial_chassis_y"
+      }
+    },
+    {
+      "when": {
+        "axis": "y",
+        "sticky_north": "true"
+      },
+      "apply": {
+        "model": "create:block/chassis_fallback/sticky_north"
+      }
+    },
+    {
+      "when": {
+        "axis": "y",
+        "sticky_south": "true"
+      },
+      "apply": {
+        "model": "create:block/chassis_fallback/sticky_south"
+      }
+    },
+    {
+      "when": {
+        "axis": "y",
+        "sticky_east": "true"
+      },
+      "apply": {
+        "model": "create:block/chassis_fallback/sticky_east"
+      }
+    },
+    {
+      "when": {
+        "axis": "y",
+        "sticky_west": "true"
+      },
+      "apply": {
+        "model": "create:block/chassis_fallback/sticky_west"
+      }
+    },
+    {
+      "when": {
+        "axis": "z"
+      },
+      "apply": {
+        "model": "create:block/chassis_fallback/radial_chassis_y",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "axis": "z",
+        "sticky_north": "true"
+      },
+      "apply": {
+        "model": "create:block/chassis_fallback/sticky_up"
+      }
+    },
+    {
+      "when": {
+        "axis": "z",
+        "sticky_south": "true"
+      },
+      "apply": {
+        "model": "create:block/chassis_fallback/sticky_down"
+      }
+    },
+    {
+      "when": {
+        "axis": "z",
+        "sticky_east": "true"
+      },
+      "apply": {
+        "model": "create:block/chassis_fallback/sticky_east"
+      }
+    },
+    {
+      "when": {
+        "axis": "z",
+        "sticky_west": "true"
+      },
+      "apply": {
+        "model": "create:block/chassis_fallback/sticky_west"
+      }
+    }
+  ]
+}

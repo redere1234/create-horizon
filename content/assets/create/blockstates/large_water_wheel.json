@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "create:block/large_water_wheel/block"
+    }
+  }
+}

@@ -1,0 +1,152 @@
+// Standalone numerical probe; the driver supplies paths to the current source modules.
+use burner::Heat;
+use burner_visual as b;
+use particles::ParticleRandom;
+use placement::Direction;
+use std::io::{self, BufRead};
+
+struct Random(u64);
+impl Random {
+    fn new(seed: i64) -> Self {
+        Self((seed as u64 ^ 0x5deece66d) & ((1 << 48) - 1))
+    }
+    fn bits(&mut self, bits: u32) -> u32 {
+        self.0 = self.0.wrapping_mul(0x5deece66d).wrapping_add(11) & ((1 << 48) - 1);
+        (self.0 >> (48 - bits)) as u32
+    }
+}
+impl ParticleRandom for Random {
+    fn next_float(&mut self) -> f32 {
+        self.bits(24) as f32 / (1 << 24) as f32
+    }
+    fn next_int(&mut self, bound: i32) -> i32 {
+        if bound & (bound - 1) == 0 {
+            return ((i64::from(bound) * i64::from(self.bits(31))) >> 31) as i32;
+        }
+        loop {
+            let n = self.bits(31) as i32;
+            let v = n % bound;
+            if n.wrapping_sub(v).wrapping_add(bound - 1) >= 0 {
+                return v;
+            }
+        }
+    }
+}
+impl b::Random for Random {
+    fn next_double(&mut self) -> f64 {
+        ((u64::from(self.bits(26)) << 27) + u64::from(self.bits(27))) as f64 / (1u64 << 53) as f64
+    }
+}
+fn heat(value: usize) -> Heat {
+    [
+        Heat::None,
+        Heat::Smouldering,
+        Heat::Fading,
+        Heat::Kindled,
+        Heat::Seething,
+    ][value]
+}
+fn main() {
+    for line in io::stdin().lock().lines() {
+        let line = line.unwrap();
+        let a: Vec<_> = line.split_whitespace().collect();
+        if a[0] == "S" {
+            let facing = Direction::ALL[a[1].parse::<usize>().unwrap()];
+            let phase = a[2].parse().unwrap();
+            let mut animation = b::Animation::new(facing);
+            let mut visual = b::Visual::new(a[3] == "1");
+            for action in &a[4..] {
+                let v: Vec<_> = action.split(',').collect();
+                let number = |i: usize| v[i].parse::<f64>().unwrap();
+                let yes = |i: usize| v[i] == "1";
+                let heat = heat(number(1) as usize);
+                if v[0] == "2" {
+                    visual = b::Visual::new(yes(2));
+                }
+                if yes(0) {
+                    let target = if yes(10) {
+                        0.0
+                    } else {
+                        (-trig::atan2(number(9) + 10.5, number(8) - 7.5) * 180.0
+                            / std::f64::consts::PI) as f32
+                            - 90.0
+                    };
+                    animation.tick(heat >= Heat::Fading && yes(2), facing, target);
+                }
+                let time = number(6) as f32;
+                let frame = visual.frame(
+                    b::FrameInput {
+                        heat,
+                        partial: number(7) as f32,
+                        time,
+                        phase,
+                        goggles: yes(3),
+                        hat: yes(4),
+                        stock_keeper: yes(5),
+                    },
+                    animation,
+                );
+                let flame = frame.flame.map_or(-1, |f| i32::from(f.superheated));
+                let speed = frame.flame.map_or(0.0, |f| f.speed);
+                let uv = frame.flame.map_or([0.0; 2], |f| f.uv(time));
+                print!(
+                    "{} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} ",
+                    animation.angle.previous,
+                    animation.angle.value,
+                    animation.head.previous,
+                    animation.head.value,
+                    frame.head as u8,
+                    frame.head_y,
+                    frame.angle,
+                    frame.rods.map_or(-1, i32::from),
+                    flame,
+                    speed,
+                    i32::from(frame.goggles),
+                    frame.hat.map_or(-1, i32::from),
+                    if frame.rods.is_some() {
+                        frame.small_y
+                    } else {
+                        0.0
+                    },
+                    if frame.rods.is_some() {
+                        frame.large_y
+                    } else {
+                        0.0
+                    },
+                    uv[0],
+                    uv[1]
+                );
+            }
+            println!();
+        } else if a[0] == "A" || a[0] == "L" {
+            ambient_case(&a);
+        } else {
+            let mut random = Random::new(a[2].parse().unwrap());
+            let mut events = Vec::new();
+            if a[0] == "P" {
+                events.extend(
+                    b::particles(
+                        heat(a[1].parse().unwrap()),
+                        [7.5, 64.5, -10.5],
+                        a[3] == "1",
+                        &mut random,
+                    )
+                    .into_iter()
+                    .flatten(),
+                );
+            } else {
+                b::particle_burst(a[1] == "1", [7.5, 64.5, -10.5], &mut random, |p| {
+                    events.push(p)
+                });
+            }
+            print!("{} ", events.len());
+            for e in events {
+                print!("{} ", e.kind as u8);
+                for n in e.position.into_iter().chain(e.velocity) {
+                    print!("{} ", n);
+                }
+            }
+            println!("{}", random.next_int(1073741824));
+        }
+    }
+}

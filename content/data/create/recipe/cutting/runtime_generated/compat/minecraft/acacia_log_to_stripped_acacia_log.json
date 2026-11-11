@@ -1,0 +1,13 @@
+{
+  "type": "create:cutting",
+  "ingredients": [
+    "minecraft:acacia_log"
+  ],
+  "processing_time": 50,
+  "results": [
+    {
+      "id": "minecraft:stripped_acacia_log",
+      "count": 1
+    }
+  ]
+}

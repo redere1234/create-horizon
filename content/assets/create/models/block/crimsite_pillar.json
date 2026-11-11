@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "side": "create:block/fallback/crimsite_pillar",
+    "end": "create:block/fallback/crimsite_cap"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "create:block/fallback/cut_scorchia",
+    "side": "create:block/fallback/cut_scorchia",
+    "top": "create:block/fallback/cut_scorchia"
+  }
+}

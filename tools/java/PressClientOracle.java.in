@@ -1,0 +1,67 @@
+// Copyright (c) 2026 create-horizon contributors
+// SPDX-License-Identifier: MIT
+// Authored explicit client contexts; pinned Create method bodies are injected privately.
+import java.util.*;import java.util.function.*;
+import net.minecraft.core.BlockPos;import net.minecraft.util.Mth;import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.Vec3;import net.createmod.catnip.math.VecHelper;
+public class PressClientOracle {
+ static class HolderLookup{interface Provider{}}
+ static class Tag{static final int TAG_COMPOUND=10;}
+ static class CompoundTag{boolean running,finished;int ticks,mode,key;List<CompoundTag>items=new ArrayList<>();
+  boolean getBoolean(String k){return k.equals("Running")?running:finished;}
+  int getInt(String k){return k.equals("Mode")?mode:ticks;}
+  List<CompoundTag>getList(String k,int ignored){return items;}}
+ static class NBTHelper{static void iterateCompoundList(List<CompoundTag>list,Consumer<CompoundTag>f){list.forEach(f);}}
+ static class ItemStack{int key;ItemStack(int k){key=k;}static ItemStack parseOptional(HolderLookup.Provider ignored,CompoundTag tag){return new ItemStack(tag.key);}}
+ static class ParticleTypes{static final Object ITEM=new Object();}
+ record ItemParticleOption(Object kind,ItemStack stack){}
+ record P(int item,double x,double y,double z,double vx,double vy,double vz){}
+ static class Level{boolean isClientSide=true;RandomSource random;int particleLevel;List<P>particles=new ArrayList<>();
+  void addParticle(ItemParticleOption data,double x,double y,double z,double vx,double vy,double vz){particles.add(new P(data.stack.key,x,y,z,vx,vy,vz));if(particleLevel==1)random.nextInt(3);}
+  BlockState getBlockState(BlockPos pos){return new BlockState();}
+  <T>List<T>getEntitiesOfClass(Class<T>c,AABB b){return List.of();}
+  List<Entity>getEntities(Object excluded,AABB b){return List.of();}}
+ static class SoundType{static final SoundType WOOL=new SoundType();}
+ static class BlockState{SoundType getSoundType(){return new SoundType();}}
+ static class Sound{void playOnServer(Level l,BlockPos p){}void playOnServer(Level l,BlockPos p,float v,float f){}}
+ static class AllSoundEvents{static final Sound MECHANICAL_PRESS_ACTIVATION=new Sound(),MECHANICAL_PRESS_ACTIVATION_ON_BELT=new Sound();}
+ static class Owner{boolean virtual;int sends;void sendData(){sends++;}boolean isVirtual(){return virtual;}}
+ static class AABB{AABB(BlockPos p){}AABB deflate(float v){return this;}}
+ static class Entity{boolean isAlive(){return true;}boolean onGround(){return true;}}
+ static class ItemEntity extends Entity{}
+ static class Specifics{float rpm;float getKineticSpeed(){return rpm;}boolean canProcessInBulk(){return false;}boolean tryProcessInWorld(ItemEntity e,boolean sim){throw new AssertionError("server branch");}boolean tryProcessInBasin(boolean sim){throw new AssertionError("server branch");}int getParticleAmount(){return 15;}void onPressingCompleted(){throw new AssertionError("server branch");}}
+ static class BlockEntityBehaviour{static Object get(Level l,BlockPos p,Object type){return null;}}
+ static class TransportedItemStackHandlerBehaviour{static final Object TYPE=new Object();}
+ static class BasinBlock{static boolean isBasin(Level l,BlockPos p){return false;}}
+ static class Base{void tick(){}void read(CompoundTag t,HolderLookup.Provider p,boolean c){}}
+ enum Mode{WORLD(1),BELT(19f/16f),BASIN(22f/16f);float headOffset;Mode(float n){headOffset=n;}}
+ static class Press extends Base{
+  static final int CYCLE=240,ENTITY_SCAN=10;Specifics specifics=new Specifics();Owner blockEntity=new Owner();Level level=new Level();
+  int prevRunningTicks,runningTicks,entityScanCooldown=10;boolean running,finished;Mode mode=Mode.WORLD;List<ItemStack>particleItems=new ArrayList<>();
+  Level getWorld(){return level;}BlockPos getPos(){return new BlockPos(1,10,2);}
+  void read(CompoundTag compound,HolderLookup.Provider registries,boolean clientPacket) @@READ@@
+  void start(Mode mode) @@START@@
+  public void tick() @@TICK@@
+  int getRunningTickSpeed() @@SPEED@@
+  float getRenderedHeadOffset(float partialTicks) @@HEAD@@
+  void spawnParticles() @@SPAWN@@
+  void makePressingParticleEffect(Vec3 pos,ItemStack stack) @@NORMAL2@@
+  void makePressingParticleEffect(Vec3 pos,ItemStack stack,int amount) @@NORMAL3@@
+  void makeCompactingParticleEffect(Vec3 pos,ItemStack stack) @@COMPACT@@
+  void applyInWorld() @@WORLD@@
+  void applyOnBasin() @@BASIN@@
+  boolean inWorld() @@INWORLD@@
+  boolean onBasin() @@ONBASIN@@
+ }
+ static String f(float v){return Float.isNaN(v)?"nan":Integer.toString(Float.floatToRawIntBits(v));}
+ static String d(double v){return Double.isNaN(v)?"nan":Long.toString(Double.doubleToRawLongBits(v));}
+ public static void main(String[]args){var scan=new Scanner(System.in);while(scan.hasNextLine()){
+  var a=scan.nextLine().split(" ");String op=a[0];var p=new Press();long seed=Long.parseLong(a[1]);var level=p.level;level.random=RandomSource.create(seed);level.particleLevel=Integer.parseInt(a[18]);
+  p.specifics.rpm=Float.intBitsToFloat((int)Long.parseLong(a[2]));p.running=a[3].equals("1");p.prevRunningTicks=Integer.parseInt(a[4]);p.runningTicks=Integer.parseInt(a[5]);p.mode=Mode.values()[Integer.parseInt(a[6])];p.finished=a[7].equals("1");p.blockEntity.virtual=a[8].equals("1");boolean attached=a[9].equals("1");int n=Integer.parseInt(a[10]);float partial=Float.intBitsToFloat((int)Long.parseLong(a[11]));int initial=Integer.parseInt(a[12]);for(int i=0;i<initial;i++)p.particleItems.add(new ItemStack(70+i));
+  if(op.equals("T")){if(!attached)p.level=null;for(int i=0;i<n;i++)p.tick();}
+  else if(op.equals("S"))p.start(Mode.values()[n]);
+  else {var tag=new CompoundTag();tag.running=a[13].equals("1");tag.finished=a[14].equals("1");tag.ticks=Integer.parseInt(a[15]);tag.mode=Integer.parseInt(a[16]);int count=Integer.parseInt(a[17]);for(int i=0;i<count;i++){var t=new CompoundTag();t.key=17+i;tag.items.add(t);}for(int i=0;i<n;i++)p.read(tag,null,op.equals("R"));}
+  System.out.print(p.running+" "+p.finished+" "+p.prevRunningTicks+" "+p.runningTicks+" "+p.mode.ordinal()+" "+p.particleItems.size()+" "+f(p.getRenderedHeadOffset(partial))+" "+f(p.getRenderedHeadOffset(partial)*p.mode.headOffset)+" "+level.random.nextInt(1073741824)+" "+level.particles.size());
+  for(var e:level.particles)System.out.print(" "+e.item+":"+d(e.x)+":"+d(e.y)+":"+d(e.z)+":"+d(e.vx)+":"+d(e.vy)+":"+d(e.vz));System.out.println();
+ }}
+}

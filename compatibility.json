@@ -1,0 +1,21 @@
+{
+  "horizon_revision": "fdc87aecdbd116bf1e08adcd062fcbaea8c2e2ca",
+  "horizon_mixins_revision": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+  "create_revision": "ac0c444d9828da3453ae8cc65338e8de063286fb",
+  "create_version": "6.0.10",
+  "import_create_version": "6.0.10",
+  "import_modrinth_version": "UjX6dr61",
+  "minecraft_source_version": "1.21.1",
+  "minecraft_target_version": "26.3",
+  "rust_version": "1.99.1",
+  "rust_date": "2026-10-15",
+  "horizon_mixins_pull_request": "https://github.com/horizon-rust/horizon-mixins/pull/25",
+  "horizon_native_api_pull_request": "https://github.com/horizon-rust/horizon/pull/8872",
+  "horizon_world_canvas_pull_request": "https://github.com/horizon-rust/horizon/pull/8918",
+  "horizon_owned_sounds_pull_request": "https://github.com/horizon-rust/horizon/pull/8924",
+  "horizon_damage_registry_issue": "https://github.com/horizon-rust/horizon/issues/8917",
+  "horizon_damage_registry_pull_request": "https://github.com/horizon-rust/horizon/pull/9519",
+  "horizon_damage_registry_previous_pull_request": "https://github.com/horizon-rust/horizon/pull/9076",
+  "horizon_macos_native_metadata_issue": "https://github.com/horizon-rust/horizon/issues/9521",
+  "horizon_macos_native_metadata_pull_request": "https://github.com/horizon-rust/horizon/pull/9529"
+}

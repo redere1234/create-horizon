@@ -1,0 +1,23 @@
+{
+  "template": "minecraft:glass",
+  "item": true,
+  "properties": {
+    "hardness": 1.5,
+    "render_shape": "ENTITYBLOCK_ANIMATED",
+    "sounds": "minecraft:andesite"
+  },
+  "state_properties": {
+    "facing": {
+      "type": "enum",
+      "values": [
+        "north",
+        "south",
+        "east",
+        "west"
+      ]
+    }
+  },
+  "default_state": {
+    "facing": "north"
+  }
+}

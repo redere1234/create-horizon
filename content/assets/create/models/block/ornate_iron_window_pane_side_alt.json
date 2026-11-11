@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_glass_pane_side_alt",
+  "textures": {
+    "edge": "create:block/fallback/ornate_iron_window_pane_top",
+    "pane": "create:block/fallback/ornate_iron_window"
+  }
+}

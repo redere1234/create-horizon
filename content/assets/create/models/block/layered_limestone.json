@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "side": "create:block/fallback/layered_limestone",
+    "end": "create:block/fallback/limestone_cap"
+  }
+}

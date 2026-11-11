@@ -1,0 +1,106 @@
+// The exact shared codec used by the game receipt adapter operates on real
+// ModBlockEntity values here. Registry/world lookup is native integration proof.
+#[cfg(test)]
+mod inventory_packet_checks {
+    use super::*;
+
+    const SCHEMAS: [(&str,&str,&str,usize,usize);3] = [
+        ("create:depot","HeldItem","OutputBuffer",1,9),
+        ("create:basin","InputItems","OutputItems",9,18),
+        ("create:millstone","InputInventory","OutputInventory",1,10),
+    ];
+    fn fixture(id:&str,input:&str,output:&str,input_size:usize)->Tag {
+        let held=if id=="create:depot" {
+            format!(r#"{}:{{Item:{{id:"minecraft:iron_ingot",count:3,components:{{"test:unknown":{{keep:923}}}}}},TransportUnknown:{{keep:19L}}}}"#,input)
+        } else {
+            format!(r#"{}:{{Size:{},Items:[{{Slot:0,id:"minecraft:iron_ingot",count:3,components:{{"test:unknown":{{keep:923}}}}}}]}}"#,input,input_size)
+        };
+        tag(&format!(r#"{{{held},{output}:{{Size:{},Items:[{{Slot:0,id:"minecraft:gold_ingot",count:4}}]}},Unowned:{{keep:[I;1,2,3]}}}}"#,if id=="create:depot"{8}else{9}))
+    }
+    fn load(id:&str,tag:&Tag)->ModBlockEntity {
+        match create_inventory_codec::decode(id,tag) {ControlFlow::Break(Some(entity))=>entity,_=>panic!("unhandled {id}")}
+    }
+    fn deliver(entity:&mut ModBlockEntity,packet_type:&str,block:&str,packet:&Tag)->bool {
+        if !create_inventory_codec::receive(entity,packet_type,block,packet) {return false;}
+        let Tag::Compound(fields)=packet else{unreachable!()};
+        // This is the unchanged original remote_block_entity_data merge.
+        entity.merge_update_tag(fields);
+        true
+    }
+    fn total(entity:&ModBlockEntity)->u32{entity.items.iter().flatten().map(|s|s.count).sum()}
+
+    #[test]
+    fn full_packet_hydrates_all_slots_without_replacing_identity_or_runtime_data() {
+        for (id,input,output,input_size,size) in SCHEMAS {
+            let packet=fixture(id,input,output,input_size);
+            let mut entity=load(id,&tag("{}"));entity.data=vec![41,42];let before=entity.revision();
+            assert!(deliver(&mut entity,id,id,&packet));assert!(before.same_entity(entity.revision()));assert_eq!(entity.data,vec![41,42]);
+            assert_eq!(entity.items.len(),size);assert_eq!(total(&entity),7);assert_eq!(entity.items,create_inventory_codec::parse_slots(id,&packet).unwrap());
+            assert_eq!(entity.items[0].as_ref().unwrap().count,3);assert_eq!(entity.items[input_size].as_ref().unwrap().count,4);
+            let after=entity.revision();assert!(deliver(&mut entity,id,id,&packet));assert_eq!(after,entity.revision());
+        }
+    }
+    #[test]
+    fn nonempty_partial_packets_clear_missing_canonical_halves_before_original_merge() {
+        for (id,input,output,input_size,_) in SCHEMAS {
+            let original=fixture(id,input,output,input_size);
+            for removed in [input,output] {
+                let mut entity=load(id,&original);entity.data=vec![19];let before=entity.revision();
+                let Tag::Compound(mut fields)=original.clone() else{unreachable!()};fields.remove(&removed.into());
+                let packet=Tag::Compound(fields);assert!(deliver(&mut entity,id,id,&packet));
+                assert!(before.same_entity(entity.revision()));assert_eq!(entity.data,vec![19]);assert!(!entity.nbt.contains_key(&removed.into()));
+                assert_eq!(total(&entity),if removed==input{4}else{3});
+                assert_eq!(entity.nbt.get(&"Unowned".into()),original.get("Unowned"));
+            }
+            let mut entity=load(id,&original);
+            assert!(deliver(&mut entity,id,id,&tag("{Items:[{Slot:0b,id:\"minecraft:diamond\",count:99}]}")));assert_eq!(total(&entity),0);
+            assert!(!entity.nbt.contains_key(&input.into()));assert!(!entity.nbt.contains_key(&output.into()));
+            assert_eq!(entity.nbt.get(&"Unowned".into()),original.get("Unowned"));
+        }
+    }
+    #[test]
+    fn empty_update_is_a_noop_while_empty_cold_load_has_empty_slots() {
+        for (id,input,output,input_size,_) in SCHEMAS {
+            let original=fixture(id,input,output,input_size);
+            let mut entity=load(id,&original);entity.data=vec![41,42];
+            let before=entity.clone();let revision=entity.revision();
+            assert!(!deliver(&mut entity,id,id,&tag("{}")));
+            assert_eq!(entity,before);assert_eq!(entity.revision(),revision);
+            let cold=load(id,&tag("{}"));assert_eq!(total(&cold),0);
+        }
+    }
+    #[test]
+    fn malformed_packet_or_type_block_entity_mismatch_is_ignored() {
+        for (id,input,output,input_size,_) in SCHEMAS {
+            let original=fixture(id,input,output,input_size);let mut entity=load(id,&original);entity.data=vec![71];
+            for (packet_type,block,packet) in [
+                (id,id,Tag::Int(1)),(id,id,Tag::List(Vec::new())),
+                ("other:entity",id,tag("{}")),(id,"other:block",tag("{}")),
+            ] {
+                let before=entity.clone();let revision=entity.revision();assert!(!deliver(&mut entity,packet_type,block,&packet));
+                assert_eq!(entity,before);assert_eq!(entity.revision(),revision);
+            }
+            let mut unrelated=ModBlockEntity::default();unrelated.id="other:entity".into();let revision=unrelated.revision();
+            assert!(!deliver(&mut unrelated,"other:entity","other:entity",&tag("{}")));assert_eq!(unrelated.revision(),revision);
+        }
+    }
+    #[test]
+    fn unsupported_packet_size_remains_opaque_and_full_valid_snapshot_recovers() {
+        for (id,input,output,input_size,_) in SCHEMAS {
+            let original=fixture(id,input,output,input_size);let mut entity=load(id,&original);entity.data=vec![9];let before=entity.revision();
+            let Tag::Compound(mut fields)=original.clone() else{unreachable!()};let Tag::Compound(buffer)=fields.get_mut(&output.into()).unwrap()else{unreachable!()};buffer.insert("Size".into(),Tag::Int(42));
+            let opaque=Tag::Compound(fields);assert!(deliver(&mut entity,id,id,&opaque));assert_eq!(total(&entity),0);assert!(!inventory_supported(&entity));
+            assert_eq!(entity.nbt.get(&output.into()),opaque.get(output));assert!(before.same_entity(entity.revision()));assert_eq!(entity.data,vec![9]);
+            assert!(deliver(&mut entity,id,id,&original));assert!(inventory_supported(&entity));assert_eq!(total(&entity),7);assert!(before.same_entity(entity.revision()));
+        }
+    }
+    #[test]
+    fn malformed_canonical_half_is_empty_and_unowned_partial_fields_keep_prior_nbt() {
+        for (id,input,output,input_size,_) in SCHEMAS {
+            let original=fixture(id,input,output,input_size);let mut entity=load(id,&original);
+            let mut packet=original.clone();let Tag::Compound(fields)=&mut packet else{unreachable!()};fields.insert(input.into(),Tag::Int(1));fields.remove(&"Unowned".into());
+            assert!(deliver(&mut entity,id,id,&packet));assert!(entity.items[..input_size].iter().all(Option::is_none));assert_eq!(total(&entity),4);
+            assert_eq!(entity.nbt.get(&"Unowned".into()),original.get("Unowned"));
+        }
+    }
+}

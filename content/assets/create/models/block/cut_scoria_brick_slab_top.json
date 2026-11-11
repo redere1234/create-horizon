@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "create:block/fallback/cut_scoria_bricks",
+    "side": "create:block/fallback/cut_scoria_bricks",
+    "top": "create:block/fallback/cut_scoria_bricks"
+  }
+}

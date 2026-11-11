@@ -1,0 +1,7 @@
+{
+  "parent": "create:block/belt_casing/sideways_middle",
+  "textures": {
+    "all": "create:block/fallback/andesite_casing",
+    "particle": "create:block/fallback/andesite_casing"
+  }
+}

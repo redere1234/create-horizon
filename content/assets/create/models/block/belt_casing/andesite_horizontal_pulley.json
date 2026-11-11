@@ -1,0 +1,7 @@
+{
+  "parent": "create:block/belt_casing/horizontal_pulley",
+  "textures": {
+    "all": "create:block/fallback/andesite_casing",
+    "particle": "create:block/fallback/andesite_casing"
+  }
+}

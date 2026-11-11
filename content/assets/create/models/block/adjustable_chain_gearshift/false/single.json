@@ -1,0 +1,46 @@
+{
+  "textures": {
+    "chain": "create:block/fallback/chain_drive",
+    "axle": "create:block/fallback/gearbox_cap",
+    "particle": "#chain",
+    "indicator": "create:block/fallback/chain_indicator"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#indicator"
+        },
+        "up": {
+          "texture": "#indicator"
+        },
+        "north": {
+          "texture": "#axle",
+          "rotation": 0
+        },
+        "south": {
+          "texture": "#axle",
+          "rotation": 0
+        },
+        "west": {
+          "texture": "#indicator",
+          "rotation": 270
+        },
+        "east": {
+          "texture": "#indicator",
+          "rotation": 90
+        }
+      }
+    }
+  ]
+}

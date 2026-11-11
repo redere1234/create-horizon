@@ -1,0 +1,13 @@
+{
+  "type": "create:cutting",
+  "ingredients": [
+    "minecraft:acacia_planks"
+  ],
+  "processing_time": 50,
+  "results": [
+    {
+      "id": "minecraft:acacia_pressure_plate",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "side": "create:block/fallback/layered_ochrum",
+    "end": "create:block/fallback/ochrum_cap"
+  }
+}

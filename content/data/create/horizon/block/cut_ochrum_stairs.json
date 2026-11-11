@@ -1,0 +1,11 @@
+{
+  "template": "minecraft:andesite_stairs",
+  "item": true,
+  "properties": {
+    "hardness": 1.25,
+    "explosion_resistance": 0.75,
+    "requires_tool": true,
+    "map_color": 40,
+    "sounds": "minecraft:calcite"
+  }
+}

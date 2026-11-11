@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "side": "create:block/fallback/asurine_pillar",
+    "end": "create:block/fallback/asurine_cap"
+  }
+}

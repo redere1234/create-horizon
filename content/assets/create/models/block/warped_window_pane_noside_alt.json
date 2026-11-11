@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_glass_pane_noside_alt",
+  "textures": {
+    "edge": "create:block/fallback/wheel_warped_plank",
+    "pane": "create:block/fallback/warped_window"
+  }
+}

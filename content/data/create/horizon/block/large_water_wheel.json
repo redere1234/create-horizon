@@ -1,0 +1,26 @@
+{
+  "template": "minecraft:glass",
+  "item": true,
+  "properties": {
+    "hardness": 1.5,
+    "sounds": "minecraft:stripped_spruce_wood",
+    "render_shape": "ENTITYBLOCK_ANIMATED"
+  },
+  "state_properties": {
+    "axis": {
+      "type": "enum",
+      "values": [
+        "x",
+        "y",
+        "z"
+      ]
+    },
+    "extension": {
+      "type": "boolean"
+    }
+  },
+  "default_state": {
+    "axis": "y",
+    "extension": "false"
+  }
+}

@@ -1,0 +1,212 @@
+{
+  "variants": {
+    "facing=down,part=start,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 180
+    },
+    "facing=down,part=start,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 180
+    },
+    "facing=down,part=middle,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 180
+    },
+    "facing=down,part=middle,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 180
+    },
+    "facing=down,part=end,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 180
+    },
+    "facing=down,part=end,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 180
+    },
+    "facing=down,part=single,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 180
+    },
+    "facing=down,part=single,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 180
+    },
+    "facing=up,part=start,powered=false": {
+      "model": "create:block/gantry_shaft/fallback"
+    },
+    "facing=up,part=start,powered=true": {
+      "model": "create:block/gantry_shaft/fallback"
+    },
+    "facing=up,part=middle,powered=false": {
+      "model": "create:block/gantry_shaft/fallback"
+    },
+    "facing=up,part=middle,powered=true": {
+      "model": "create:block/gantry_shaft/fallback"
+    },
+    "facing=up,part=end,powered=false": {
+      "model": "create:block/gantry_shaft/fallback"
+    },
+    "facing=up,part=end,powered=true": {
+      "model": "create:block/gantry_shaft/fallback"
+    },
+    "facing=up,part=single,powered=false": {
+      "model": "create:block/gantry_shaft/fallback"
+    },
+    "facing=up,part=single,powered=true": {
+      "model": "create:block/gantry_shaft/fallback"
+    },
+    "facing=north,part=start,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90
+    },
+    "facing=north,part=start,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90
+    },
+    "facing=north,part=middle,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90
+    },
+    "facing=north,part=middle,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90
+    },
+    "facing=north,part=end,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90
+    },
+    "facing=north,part=end,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90
+    },
+    "facing=north,part=single,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90
+    },
+    "facing=north,part=single,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90
+    },
+    "facing=south,part=start,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,part=start,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,part=middle,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,part=middle,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,part=end,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,part=end,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,part=single,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,part=single,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west,part=start,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,part=start,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,part=middle,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,part=middle,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,part=end,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,part=end,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,part=single,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,part=single,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 270
+    },
+    "facing=east,part=start,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,part=start,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,part=middle,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,part=middle,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,part=end,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,part=end,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,part=single,powered=false": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,part=single,powered=true": {
+      "model": "create:block/gantry_shaft/fallback",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

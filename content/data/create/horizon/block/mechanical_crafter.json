@@ -1,0 +1,33 @@
+{
+  "template": "minecraft:gold_block",
+  "item": true,
+  "properties": {
+    "occludes": false,
+    "map_color": 40,
+    "render_shape": "MODEL"
+  },
+  "state_properties": {
+    "facing": {
+      "type": "enum",
+      "values": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ]
+    },
+    "pointing": {
+      "type": "enum",
+      "values": [
+        "up",
+        "left",
+        "down",
+        "right"
+      ]
+    }
+  },
+  "default_state": {
+    "facing": "north",
+    "pointing": "up"
+  }
+}

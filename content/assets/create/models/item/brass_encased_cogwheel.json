@@ -1,0 +1,17 @@
+{
+  "parent": "create:block/brass_encased_cogwheel",
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "scale": [
+        0.625,
+        0.625,
+        0.625
+      ]
+    }
+  }
+}

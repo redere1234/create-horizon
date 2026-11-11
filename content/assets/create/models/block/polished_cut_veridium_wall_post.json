@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_wall_post",
+  "textures": {
+    "wall": "create:block/fallback/polished_cut_veridium"
+  }
+}

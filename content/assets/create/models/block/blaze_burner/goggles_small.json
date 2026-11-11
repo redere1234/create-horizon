@@ -1,0 +1,72 @@
+{
+  "textures": {
+    "all": "create:block/fallback/cranial_goggles",
+    "particle": "create:block/fallback/cranial_goggles"
+  },
+  "elements": [
+    {
+      "from": [
+        4,
+        0,
+        3
+      ],
+      "to": [
+        7,
+        3,
+        4
+      ],
+      "faces": {
+        "down": {
+          "texture": "#all"
+        },
+        "up": {
+          "texture": "#all"
+        },
+        "north": {
+          "texture": "#all"
+        },
+        "south": {
+          "texture": "#all"
+        },
+        "west": {
+          "texture": "#all"
+        },
+        "east": {
+          "texture": "#all"
+        }
+      }
+    },
+    {
+      "from": [
+        9,
+        0,
+        3
+      ],
+      "to": [
+        12,
+        3,
+        4
+      ],
+      "faces": {
+        "down": {
+          "texture": "#all"
+        },
+        "up": {
+          "texture": "#all"
+        },
+        "north": {
+          "texture": "#all"
+        },
+        "south": {
+          "texture": "#all"
+        },
+        "west": {
+          "texture": "#all"
+        },
+        "east": {
+          "texture": "#all"
+        }
+      }
+    }
+  ]
+}

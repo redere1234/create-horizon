@@ -1,0 +1,32 @@
+{
+  "template": "minecraft:glass",
+  "item": true,
+  "properties": {
+    "hardness": 1.5,
+    "explosion_resistance": 6,
+    "occludes": false,
+    "render_shape": "MODEL",
+    "requires_tool": true,
+    "sounds": "minecraft:andesite"
+  },
+  "state_properties": {
+    "facing": {
+      "type": "enum",
+      "values": [
+        "down",
+        "up",
+        "north",
+        "south",
+        "west",
+        "east"
+      ]
+    },
+    "axis_along_first": {
+      "type": "boolean"
+    }
+  },
+  "default_state": {
+    "facing": "north",
+    "axis_along_first": "true"
+  }
+}

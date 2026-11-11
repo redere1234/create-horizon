@@ -1,0 +1,19 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "MIT"
+
+[[mods]]
+modId = "create_reference_bridge"
+version = "1"
+displayName = "Create reference bridge (development only)"
+description = "Local commands, original state, client input and captures for the isolated Java reference. Never shipped."
+
+[[dependencies.create_reference_bridge]]
+modId = "create"
+type = "required"
+versionRange = "[6.0.10,6.0.11)"
+ordering = "AFTER"
+side = "CLIENT"
+
+[[mixins]]
+config = "create_reference_observers.mixins.json"

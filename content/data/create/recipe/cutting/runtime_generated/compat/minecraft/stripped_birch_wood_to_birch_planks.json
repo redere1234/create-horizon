@@ -1,0 +1,13 @@
+{
+  "type": "create:cutting",
+  "ingredients": [
+    "minecraft:stripped_birch_wood"
+  ],
+  "processing_time": 50,
+  "results": [
+    {
+      "id": "minecraft:birch_planks",
+      "count": 6
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "template": "minecraft:andesite",
+  "item": true,
+  "properties": {
+    "map_color": 44,
+    "sounds": "minecraft:oak_planks"
+  }
+}

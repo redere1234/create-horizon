@@ -1,0 +1,25 @@
+{
+  "textures": {
+    "particle": "create:block/fallback/sticky_piston"
+  },
+  "elements": [
+    {
+      "from": [
+        2,
+        -0.01,
+        2
+      ],
+      "to": [
+        14,
+        0,
+        14
+      ],
+      "faces": {
+        "down": {
+          "texture": "#particle",
+          "cullface": "down"
+        }
+      }
+    }
+  ]
+}

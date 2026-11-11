@@ -1,0 +1,66 @@
+{
+  "depot_slide": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "minecraft:block.sand.break"
+      }
+    ]
+  },
+  "depot_plop": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "minecraft:entity.item_frame.add_item"
+      }
+    ]
+  },
+  "mechanical_press_activation": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "minecraft:block.anvil.land"
+      }
+    ]
+  },
+  "cranking": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "minecraft:block.wood.place"
+      }
+    ]
+  },
+  "wrench_rotate": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "minecraft:block.wooden_trapdoor.close"
+      }
+    ]
+  },
+  "wrench_remove": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "minecraft:entity.item.pickup"
+      }
+    ]
+  },
+  "mixing": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "minecraft:block.gilded_blackstone.break",
+        "volume": 0.125,
+        "pitch": 0.5
+      },
+      {
+        "type": "event",
+        "name": "minecraft:block.netherrack.break",
+        "volume": 0.125,
+        "pitch": 0.5
+      }
+    ]
+  }
+}
